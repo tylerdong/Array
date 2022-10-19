@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>数组的扩展</title>
+</head>
+<body>
+<script>
+    // let writeStr = (str) => {
+    //     document.write(JSON.stringify(str) + '<br>');
+    // };
+
+    /**
+     * 1. 扩展运算符
+     * 扩展运算符用于将一个数组转换为用空格分割的参数序列
+     * */
+    // console.log(...[1, 2, 3]);
+    // console.log(1, ...[1, 2, 3], 4, 5);
+
+    /***
+     * 该运算符主要用于函数调用
+     * /
+     //  function push(array, ...items) {
+    //    array.push(...items);
+    //  }
+     // function add (x, y) {
+    //     return x + y;
+    // }
+     //
+     // var number = [1, 2, 3, 4];
+     // var sum = add(...number);
+     // console.log(sum);
+     /**
+     * 上面的代码中push和add的参数都是一个扩展运算符，该运算符将一个数组转换成参数序列。
+     * /
+
+
+     /**
+     * 扩展运算符与正常的函数参数可以结合使用，非常灵活
+     * */
+    // function f(v, w, x, y, z) {
+    //     console.log(v, w, x, y, z);
+    // }
+    //
+    // const args = [0, 1];
+    // f(-1, ...args, 2, ...[3]); // -1 0 1 2 3
+
+    // 扩展运算符后面还可以跟一个表达式，表达式的值要返回一个数组
+    // const arr = [
+    //     ...(x > 0 ? ['a'] : []),
+    //     'b',
+    // ];
+
+    // 如果扩展运算符后面是一个空数组，则不产生任何作用
+    // console.log([...[], 1]); // 输出[1]
+
+    // 注意只有在函数调用的时候，扩展运算符才可以放在圆括号内，否则会报错
+
+    /**替代apply方法
+     * 由于扩展运算符可以展开数组，所以不再需要apply方法，将数组转为函数的参数了。
+     * apply接受的参数类型是逗号分隔的
+     * */
+    // ES5的写法
+    //  var max1 = Math.max.apply(null, [14,3,77]);
+    //  console.log(max1);
+
+    // function getMaxOfArray(arr) {
+    //     console.log(arguments)
+    //     return Math.max.apply(null, arr);
+    // }
+    // var arr = [1, 2, 3];
+    // console.log(getMaxOfArray(arr));
+
+    // ES6的写法
+    //    var max2 = Math.max(...[14, 3, 77]);
+    //    console.log(max2);
+    /**
+     * 通过push将一个数组添加到另一个数组的尾部。
+     * push方法的参数不能是数组，可以使用apply方法变通使用push方法，有了扩展运算符之后就可以直接将数组传入push方法中。
+     * */
+    //    var arr1 = [0, 1, 2];
+    //    var arr2 = [3, 4, 5];
+    //    var result = Array.prototype.push.apply(arr1, arr2);
+    //    console.log(arr1);
+    //  var arr3 = [6,7,8];
+    //  var arr4 = [9,10,11];
+    //  arr3.push(...arr4);
+    //  console.log(arr3);
+
+    // 下面是另外一个例子
+    // ES5写法
+    // var date1 = new (Date.bind.apply(Date, [null, 2015, 1, 1]))
+    // console.log(date1);
+    // ES6写法
+    // var date2 = new Date(...[2015, 1, 1])
+    // console.log(date2);
+
+    /**
+     * 扩展运算符的应用
+     *
+     * （1） 复制数组(深拷贝)
+     * 数组是复合数据类型，如果直接复制的话，只是复制了指向底层数据结构的指针，而不是克隆一个全新的数组
+     * */
+    // const a1 = [1, 2]
+    // const a2 = a1
+    // a1[1] = 3
+    // console.log(a2[1]); // 3
+    /*上面代码中a2不是a1的克隆，而是指向同一个数据的另外一个指针。修改a2，a1也会跟着修改。
+    * ES5中只能用变通的方法来克隆数组，如下：
+    * */
+    // const a1 = [1, 2]
+    // const a2 = a1.concat()
+    // a2[1] = 3
+    // console.log(a2[1]); //3
+    // 上面代码中，a1.concat()会返回一个全新的数组，再修改a2不会影响a1
+    // 扩展运算符提供了复制数组的简便写法
+
+    // const a1 = [1, 2]
+    // const a2 = [...a1]
+    // const [...a3] = a1
+    // a2[1] = 3
+    // a3[1] = 4
+    // console.log(a1[1]); //2
+    // 上面两种写法a2，a3都是a1的克隆
+
+
+    /**
+     * （2） 合并数组
+     * 扩展运算符提供数组合并的新写法
+     * */
+    // var arr1 = ['a','b'];
+    // var arr2 = ['c'];
+    // var arr3 = ['d','e', 'a'];
+    // var result1 = arr1.concat(arr2,arr3);
+    // result1[0] = 'f'
+    // console.log(arr1);
+    // var result2 = [...arr1, ...arr2, ...arr3];
+    // console.log(result2);
+    /*不过上面这两种方式都是浅拷贝*/
+    // const a1 = [{foo: 1}]
+    // const a2 = [{bar: 2}]
+    // const a3 = a1.concat(a2)
+    // const a4 = [...a1, ...a2]
+    // a1[0].foo = 3
+    // console.log(a3[0].foo);
+    // console.log(a3[0] === a1[0]);
+    // console.log(a4[0] === a1 [0]);
+    // 上面代码中，a3,a4是用两种不同的方式合并而成的新数组，但是他们的成员都是对元数组的引用，就是前拷贝，如果修改了原数组的成员同时就修改新数组的成员
+
+
+    /** （3）与解构赋值结合
+     * 扩展运算可以和解构赋值结合起来，用于生成数组；如果将扩展运算符用于数组赋值，只能放在参数的最后一位，否则会报错**/
+    //  const [first, ...reset] = [1,2,3,4,5,6];
+    //  console.log(first);
+    //  console.log(reset);
+
+    /** （4）字符串
+     * 扩展运算符可以将字符串转为真正的字符串数组，任何实现了迭代器接口的对象都可以使用扩展运算符转换为真正的数组
+     * 没有部署迭代器接口的对象都不能通过扩展运算符转换为对象*/
+    //  console.log([...'hello']); // ['h', 'e', 'l', 'l', '0']
+
+    /** (5) 实现了Iterator接口的对象
+     * 任何定义了遍历器（Iterator）接口的对象，都可以用扩展运算符转换数组
+     * let nodeList = document.querySelectorAll('div')
+     * let array = [...nodeList]
+     * 这里querySelectorAll方法返回的不是数组，而是一个NodeList对象，它是一个类似数组的对象。阔转运算符可以将它转化为真正的数组，
+     * 原因就是NodeList对象实现了Iterator接口。
+     **/
+    // Number.prototype[Symbol.iterator] = function* () {
+    //     let i = 0
+    //     let num = this.valueOf()
+    //     while (i < num) {
+    //         yield i++
+    //     }
+    // }
+    // console.log([...5]);
+    /**上面代码中，定义了Number对象的便利器接口 */
+
+
+    /** 扩展运算符内部调用的是数据结构的Iterator接口，因此只要具有迭代器接口的对象都可以使用扩展运算符，如Map解构*/
+    //  let map = new Map([
+    //  	[1, 'one'],
+    //    [2, 'two'],
+    //    [3, 'three']
+    //  ]);
+    //  let arr = [...map.keys()];
+    //  console.log(arr);
+
+    /**Array.from可以将对象中所有属性的值转换为数组；只要是部署了Iterator接口的数据结构，Array.from都能将其转为数组，
+     * 扩展运算符背后调用的是遍历器接口(迭代器Symbol.iterator)，如果这个对象没有部署这个接口，就无法转换。
+     * Array.from方法还支持类似数组的对象。所谓类似数组的对象，就是有length属性，任何有length属性的对象，都可以通过Array.from来转换成数组，
+     * 而此时扩展运算符就无法转换*/
+    //	let arrayLike = {
+    //		'0': 'a',
+    //		'1': 'b',
+    //		'2': 'c',
+    //		'3': 'd',
+    //		length: 3
+    //	};
+    //es5写法
+    //	var arr1 = [].slice.call(arrayLike);
+    //	console.log(arr1);
+    //es6写法
+    //	let arr2 = Array.from(arrayLike);
+    //	console.log(arr2);
+
+    /**Array.from还可以接受第二个参数，类似数组的map方法，用来对每个元素进行处理，将处理后的值放入返回的数组*/
+    //  let arrayLike = {
+    //    '0': 'a',
+    //    '1': 'b',
+    //    '2': 'c',
+    //    '3': 'd',
+    //    length: 3
+    //  };
+    //  let result = Array.from(arrayLike, x => x + 'x');
+    //  result = Array.from(arrayLike).map(x => x + 'x');
+    //  console.log(result);
+
+    /**Array.of可以将一组值转换为数组。*/
+    //  var result = Array.of(3,11,8);
+    //  console.log(result);
+    //  var result1 = [].slice.call(3,11,8);
+    //  console.log(result1);
+
+    // let array = [
+    //     {name: 'zhangsan', age: 10},
+    //     {name: 'lisi', age: 11},
+    //     {name: 'wangwu', age: 12}
+    //   ];
+    //    let index = array.findIndex((value, index, arr) => {
+    //        return value.name === 'wangwu1';
+    //    });
+    //	// array.splice(index, 1);
+    //    console.log(index);
+    //	array[index]['name'] = '王五';
+    //  console.log(array);
+    //
+    //  let obj = {name:'zhangsan'};
+    //  let result = Object.assign(obj, {age: 16});
+    //  console.log(obj);
+    //  let arr = [{name:'zhangsan', value: 1}, {name:'lisi', value: 2}];
+    //  let arr1 = [1,2,3]
+    //  let {keys} = Object
+    //  console.log(arr1.keys())
+    //  var newArr = arr.map((item, index, input) => {
+    //  	return {name: item.name, value: item.value * 2};
+    //  })
+    //  console.log(newArr)
+
+    //  let str = 'abcd|efgk';
+    //  let [a, b] = [...str.split('|')];
+    //  console.log(a);
+    //	console.log(b);
+
+
+    /**split操作*/
+    //	let [a, b] = "NTAQ|FMZX".split('|');
+    //	console.log(a);
+    //	console.log(b);
+
+    /**find*/
+    // let arr = [{name: 'zhangsan', age: 10}, {name: "lisi", age: 20}];
+    //  	let newArr = arr.find(value => value.age === 20);
+    // arr.forEach(value => value.age = value.age - 1);
+    // writeStr(arr)
+
+    //    let arr = [0, 1, 2];
+    //    arr.splice(0, 1);
+    //    console.log(arr);
+
+    //    let arr = { name: 'zhangsan', age: 20 };
+    //    delete arr['name'];
+    //    console.log(arr);
+    //    var arr1
+    //    console.log(arr1);
+
+
+    // 如何创建一个数组 [1,2,3,4,5,6,7,8,9,10]
+    /**1.使用
+     * Array(length): Array构造函数，生成一个length长度的数数组，每个元素都是null
+     * Array.fill：使用固定值填充一个数组，从起始索引到终止索引
+     * Array.map：创建一个新的数组，其结果是数组中每个元素调用给一个提供的匿名函数返回的结果
+     * */
+    // console.time("arr1");
+    // let arr1 = Array(10).fill(0).map((value, index) => {
+    //     return ++index;
+    // });
+    // console.log(arr1);
+    // console.timeEnd("arr1");
+    // console.log(arr1);
+    //	let arrObj1 = Array(10).fill(0).map((value, index) => {
+    //		return {name: `name${++index}`, value: `value${index}`};
+    //	});
+    //	writeStr(arrObj1);
+
+    //    /**2.使用Array.from
+    //     * Array.from方法从一个类似数组或可迭代对象中创建一个新的数组实例
+    //     * */
+    // console.time("arr2");
+    // let arr2 = Array.from(new Array(10), (value, index) => {
+    //     return ++index;
+    // });
+    // console.timeEnd("arr2");
+    // console.log(arr2);
+
+    //    /**3.递归
+    //     * 这里用到了递归和立即执行函数
+    //     * */
+    // console.time("arr3")
+    // let arr3 = (function wallace(i) {
+    //     return (i < 1) ? [] : wallace(i - 1).concat(i);
+    // })(10);
+    // console.log(arr3);
+    // console.timeEnd("arr3");
+    // console.log(arr3);
+
+    /**4.使用尾递归
+     * */
+    // console.time("arr4")
+    // let arr4 = (function mistake(i, acc) {
+    //     return (i < 10) ? mistake(i + 1, acc.concat(i)) : acc;
+    // })(1, []);
+    // console.timeEnd("arr4")
+    // console.log(arr4);
+
+    /**5.使用Generator
+     * Generator递归调用
+     * */
+    // console.time("arr5");
+    // function* mistake(i) {
+    //     yield i;
+    //     if (i < 10) {
+    //         yield* mistake(i + 1);
+    //     }
+    // }
+    // let arr5 = Array.from(mistake(1));
+    // console.timeEnd("arr5");
+    // console.log(arr5);
+
+    /**6.apply方式
+     * */
+    // console.time("arr6");
+    // let arr6 = Array.apply(null, {length: 10}).map((value, index) => index + 1);
+    // console.timeEnd("arr6");
+    // console.log(arr6);
+
+    /**数组没有赋值的元素是undefined*/
+    //	let arr = new Array(5);
+    //	arr[0] = 1;
+    //	arr[4] = 2;
+    //	console.log(arr[2]);
+    //    let date = new Date();
+    //    let data = date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate()
+    //    console.log(data);
+
+    //    let arr = Array(10);
+    //    arr[0] = 1;
+    //    for (let i = 0; i < arr.length; i++) {
+    //        writeStr(arr[i]);
+    //    }
+    //
+    //    let arr1 = [1, , , , , , , , , 1];
+    //    for (let i = 0; i < arr1.length; i++) {
+    //        writeStr(arr1[i]);
+    //    }
+
+    // let list = [{name: 'zhangsan', age: 10}, {name: 'lisi', age: 12}];
+    // list.forEach(item => { item.isChecked = 'boy' })
+    // console.log(list)
+
+    // let list = [{name: 'zhangsan', age: 10}, {name: 'lisi', age: 12}];
+    // let a = list.filter((item) => { return item.age > 30 })
+    // console.log(a)
+
+    // let arr = [{"1":""},{"2":"1"},{"3":"3"},{"4":"4"},{"5":"5"},{"6":"6"},{"7":"7"},{"8":"8"},{"9":"9"},{"10":"10"},{"11":"11"},{"12":"12"},{"13":"13"},{"14":"14"},{"15":"15"},{"16":"16"},{"17":"17"},{"18":"18"},{"19":"19"},{"20":"20"},{"21":"21"},{"22":"22"},{"23":"23"},{"24":"24"}];
+    // let result = []
+    // for (let i = 0; i < arr.length; i++) {
+    //     for (let j = i + 1; j < arr.length; j++) {
+    //         if (Object.values(arr[i])[0] === Object.values(arr[j])[0]) {
+    //             if (!result.includes(Object.keys(arr[i])[0])) {
+    //                 result.push({
+    //                     location: Object.keys(arr[i])[0],
+    //                     order: Object.values(arr[i])[0]
+    //                 })
+    //             }
+    //         }
+    //     }
+    // }
+
+    // 判断数组中是否有重复元素
+    // function duplicates (arr) {
+    //     let result = []
+    //     for (let i = 0; i < arr.length; i++) {
+    //         for (let j = i + 1; j < arr.length; j++) {
+    //             if (Object.values(arr[i])[0] === Object.values(arr[j])[0]) {
+    //                 if (!result.includes(Object.keys(arr[i])[0])) {
+    //                     result.push({location: Object.keys(arr[i])[0], order: Object.values(arr[i])[0]})
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     return result
+    // }
+    // let result = duplicates(arr);
+    //
+    //
+    // let valid = arr.filter(val => {
+    //     return !Object.values(val)[0] || !/^[0-9]*[1-9][0-9]*$/.test(Object.values(val)[0])
+    // })
+
+    // 数组排序
+    // var items = [
+    //         {
+    //             "batch": "SE31007",
+    //             "lineCode": "V-ODF-1001"
+    //         },
+    //         {
+    //             "batch": "SE31007",
+    //             "lineCode": "V-ODF-1001"
+    //         },
+    //         {
+    //             "batch": "SE31007",
+    //             "lineCode": "V-ODF-1001"
+    //         },
+    //         {
+    //             "batch": "F33029",
+    //             "lineCode": "HZL-DC-DEV"
+    //         },
+    //         {
+    //             "batch": "F33029",
+    //             "lineCode": "HZL-DC-DEV"
+    //         },
+    //         {
+    //             "batch": "F33029",
+    //             "lineCode": "HZL-DC-DEV"
+    //         }
+    //     ];
+    // var order = true
+    // items.sort((a, b) => {
+    //     return (order)
+    //         ? a.lineCode.localeCompare(b.lineCode, 'zh')
+    //         : b.lineCode.localeCompare(a.lineCode, 'zh')
+    // })
+    //
+    // console.log(items)
+
+    /**
+     * map操作， splice删除数组元素
+     */
+    // let arr = [
+    //   {"key": "1", "value": "待处理"},
+    //   {"key": "2", "value": "已废弃"},
+    //   {"key": "3", "value": "审核成功"},
+    //   {"key": "4", "value": "审核失败"},
+    //   {"key": "5", "value": "已提交"},
+    //   {"key": "6", "value": "发布成功"},
+    //   {"key": "7", "value": "发布失败"}
+    // ]
+    // console.log(arr.unshift({key: '199', value: '全部'}))
+    // console.log(arr)
+    //
+    // console.log(arr.findIndex(item => item.key === '30'))
+    // let result = []
+    // arr.forEach(item)
+    // let id = 0
+    // let arr2 = arr.map(i => {
+    //   return {...i, id}
+    // })
+    // console.log(arr)
+    // console.log(arr2)
+    // // let first = arr.find(i => i.key === '1')
+    // arr[0].name = 'zhang'
+    // console.log(arr)
+    // arr.splice(0, arr.length)
+    // console.log(arr)
+
+    // 使用reduce计算所有学生的年龄总和
+    // var students = [{
+    //     name: 'Anna',
+    //     books: ['Bible', 'Harry Potter'],
+    //     age: 21
+    // }, {
+    //     name: 'Bob',
+    //     books: ['War and peace', 'Romeo and Juliet'],
+    //     age: 26
+    // }, {
+    //     name: 'Alice',
+    //     books: ['The Lord of the Rings', 'The Shining'],
+    //     age: 18
+    // }];
+    // let total = students.reduce((acc, curr) => {return acc + curr.age}, 0)
+    // console.log(total)
+
+    // var orders = [
+    //     {
+    //         userName: 'Anna',
+    //         books: 'Bible',
+    //         money: 21.2
+    //     },
+    //     {
+    //         userName: 'Bob',
+    //         books: 'War and peace',
+    //         money: 26.5
+    //     },
+    //     {
+    //         userName: 'Alice',
+    //         books: 'The Lord of the Rings',
+    //         money: 18.4
+    //     }
+    // ];
+    // let total = orders.reduce((acc, curr) => {return acc + curr.money}, 0);
+    // console.log(total);
+
+    /**
+     * 数组去重的方法
+     * https://segmentfault.com/a/1190000016418021?utm_source=tag-newest
+     * 1. 利用对象的属性不能重复的特点
+     */
+    // var arr = ['qiang','ming','tao','li','liang','you','qiang','tao'];
+    // let nonredundant1 = arr.reduce(function(seed, item, index) {
+    //     seed[item] = index;
+    //     return seed;
+    // },{});
+    // console.log(nonredundant1);
+    //
+    // var arr = ['qiang','ming','tao','li','liang','you','qiang','tao'];
+    // console.time("nonredundant1");
+    // var nonredundant1 = Object.getOwnPropertyNames(arr.reduce(function(seed, item, index) {
+    //     seed[item] = index;
+    //     return seed;
+    // },{}));
+    // console.timeEnd("nonredundant1");
+    // console.log(nonredundant1);
+
+    /**
+     * 2. 利用ES6中的Set去重
+     */
+    // var arr = ['qiang','ming','tao','li','liang','you','qiang','tao'];
+    // function unique (arr) {
+    //     return Array.from(new Set(arr))
+    // }
+    // console.time("nonredundant2");
+    // var nonredundant2 = unique(arr);
+    // console.timeEnd("nonredundant2");
+    // console.log(nonredundant2);
+
+    /**
+     * 3.使用for循环和splice
+     */
+    // function unique(arr) {
+    //     for (var i = 0; i < arr.length; i++) {
+    //         for (var j = i + 1; j < arr.length; j++) {
+    //             if (arr[i] === arr[j]) {         //第一个等同于第二个，splice方法删除第二个
+    //                 arr.splice(j, 1);
+    //                 j--;
+    //             }
+    //         }
+    //     }
+    //     return arr;
+    // }
+    //
+    // console.time("nonredundant3");
+    // var arr = ['qiang', 'ming', 'tao', 'li', 'liang', 'you', 'qiang', 'tao'];
+    // var nonredundant3 = unique(arr);
+    // console.timeEnd("nonredundant3");
+    // console.log(nonredundant3);
+
+
+    /**
+     * 4. 使用indexOf去重
+     */
+    // function unique(arr) {
+    //     var array = [];
+    //     for (var i = 0; i < arr.length; i++) {
+    //         if (array .indexOf(arr[i]) === -1) {
+    //             array .push(arr[i])
+    //         }
+    //     }
+    //     return array;
+    // }
+    // var arr = ['qiang', 'ming', 'tao', 'li', 'liang', 'you', 'qiang', 'tao'];
+    // console.time("nonredundant4");
+    // var nonredundant4 = unique(arr);
+    // console.timeEnd("nonredundant4");
+    // console.log(nonredundant4);
+
+    /**
+     * 5. 使用sort去重
+     * 先排序使用sort，然后判断相邻元素是否相等，如果相等则去掉
+     */
+    // function unique(arr) {
+    //     arr = arr.sort()
+    //     var arrry = [arr[0]];
+    //     for (var i = 1; i < arr.length; i++) {
+    //         if (arr[i] !== arr[i - 1]) {
+    //             arrry.push(arr[i]);
+    //         }
+    //     }
+    //     return arrry;
+    // }
+    //
+    // var arr = ['qiang', 'ming', 'tao', 'li', 'liang', 'you', 'qiang', 'tao'];
+    // console.time("nonredundant5");
+    // var nonredundant5 = unique(arr);
+    // console.timeEnd("nonredundant5");
+    // console.log(nonredundant5);
+
+    /**
+     * 6.使用对象属性不重复
+     * */
+    // function unique(arr) {
+    //     var obj = {};
+    //     return arr.filter(function(item, index, arr){
+    //         return obj.hasOwnProperty(typeof item + item) ? false : (obj[typeof item + item] = true)
+    //     })
+    // }
+    // var arr = ['qiang', 'ming', 'tao', 'li', 'liang', 'you', 'qiang', 'tao'];
+    // console.time("nonredundant6");
+    // var nonredundant6 = unique(arr);
+    // console.timeEnd("nonredundant6");
+    // console.log(nonredundant6);
+
+    /**
+     * 6.使用map数据结构
+     * */
+    // function unique(arr) {
+    //     let map = new Map();
+    //     let array = new Array();  // 数组用于返回结果
+    //     for (let i = 0; i < arr.length; i++) {
+    //         if (map.has(arr[i])) {  // 如果有该key值
+    //             map.set(arr[i], true);
+    //         } else {
+    //             map.set(arr[i], false);   // 如果没有该key值
+    //             array.push(arr[i]);
+    //         }
+    //     }
+    //     return array;
+    // }
+    //
+    // var arr = ['qiang', 'ming', 'tao', 'li', 'liang', 'you', 'qiang', 'tao'];
+    // console.time("nonredundant7");
+    // var nonredundant7 = unique(arr);
+    // console.timeEnd("nonredundant7");
+    // console.log(nonredundant7);
+
+    /**
+     * 7.使用reduce和include去重
+     */
+    // function unique(arr){
+    //     return arr.reduce((prev,cur) => prev.includes(cur) ? prev : [...prev,cur],[]);
+    // }
+    // var arr = ['qiang', 'ming', 'tao', 'li', 'liang', 'you', 'qiang', 'tao'];
+    // console.time("nonredundant8");
+    // var nonredundant8 = unique(arr);
+    // console.timeEnd("nonredundant8");
+    // console.log(nonredundant8);
+
+    /**
+     * https://blog.csdn.net/Bule_daze/article/details/103971587
+     * https://bost.ocks.org/mike/shuffle/
+     * 从数组中随机抽取不重复的元素
+     *
+     */
+    // var letter = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
+    // function shuffle1(arr) {
+    //     return arr.sort(() => 0.5 - Math.random())
+    // }
+    // console.time("shuffle1");
+    // letter = shuffle1(letter);
+    // console.timeEnd("shuffle1");
+    // console.log(letter);
+
+    /**
+     * 1. Math.random()&Array.sort()
+     * 这种方式并不是真正的随机，来看下面的例子。对这个10个字母数组排序1000次，假设这个排序是随机的话，
+     * 字母a在排序后的数组中每个位置出现的位置应该是1000/10=100，或者说接近100次。
+     */
+    // let n = 1000;
+    // let count = (new Array(10)).fill(0);
+    // for (let i = 0; i < n; i++) {
+    //     let letter = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
+    //     letter.sort(() => Math.random() - 0.5);
+    //     count[letter.indexOf('a')]++
+    // }
+    // console.log(count);
+
+    /**
+     * 2. 给数组元素一个随机值，然后再排序
+     **/
+    // let letter = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
+    // function shuffle2(arr) {
+    //     let new_arr = arr.map(i => ({value: i, range: Math.random()}));
+    //     new_arr.sort((a, b) => a.range - b.range);
+    //     return new_arr.map(i => i.value);
+    // }
+    // console.time("shuffle2");
+    // letter = shuffle2(letter);
+    // console.timeEnd("shuffle2");
+    // console.log(letter);
+    // 测试一下随机性
+    // let n = 1000, count = (new Array(10)).fill(0);
+    // for (let i = 0; i < n; i++) {
+    //     let letter = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
+    //     letter = shuffle2(letter)
+    //     count[letter.indexOf('a')]++
+    // }
+    // console.log(count);
+    // let n = 1000;
+    // let count = (new Array(10)).fill(0);
+    // function shuffle3(arr) {
+    //     let i = arr.length, t, j;
+    //     while (i) {
+    //         j = Math.floor(Math.random() * (i--)); //
+    //         t = arr[i];
+    //         arr[i] = arr[j];
+    //         arr[j] = t;
+    //     }
+    // }
+    // for (let i = 0; i < n; i++) {
+    //     let letter = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
+    //     shuffle3(letter);
+    //     count[letter.indexOf('a')]++
+    // }
+    // console.log(count);
+
+    // console.time("shuffle3");
+    // shuffle3(letter);
+    // console.timeEnd("shuffle3");
+    // console.log(letter)
+
+    /**
+     * 五种方式实现数组扁平化
+     * https://www.cnblogs.com/wind-lanyan/p/9044130.html
+     */
+    //
+    // var arr1 = [1, 2, [3, 4]];
+    // arr1 = arr1.flat();
+    // console.log(arr1); // [1, 2, 3, 4]
+    //
+    // var arr2 = [1, 2, [3, 4, [5, 6]]];
+    // arr2 = arr2.flat();
+    // console.log(arr2); //[1, 2, 3, 4, [5, 6]]
+    //
+    // var arr3 = [1, 2, [3, 4, [5, 6]]];
+    // arr3 = arr3.flat(2);
+    // console.log(arr3); // [1, 2, 3, 4, 5, 6]
+    //
+    // var arr4 = [1, 2, [3, 4, [5, 6, [7, 8, [9, 10]]]]];
+    // arr4 = arr4.flat(Infinity);
+    // console.log(arr4); // [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+
+    // /**
+    //  * 1. reduce
+    //  */
+    // let arr = [1, [2, 3, [4, 5]]];
+    // function flatten1(arr) {
+    //     return arr.reduce((prev, curr) => prev.concat(Array.isArray(curr) ? flatten1(curr) : curr), []);
+    // }
+    // console.time("flatten1");
+    // console.log(flatten1(arr));
+    // console.timeEnd("flatten1");
+    //
+    // /**
+    //  * 2. toString & split
+    //  */
+    // let arr = [1, [2, 3, [4, 5]]];
+    // function flatten2(arr) {
+    //     return arr.toString().split(",").map(i => Number(i));
+    // }
+    // console.time("flatten2");
+    // console.log(flatten2(arr));
+    // console.timeEnd("flatten2");
+
+    //
+    // /**
+    //  * 3.join & split
+    //  */
+    // let arr = [1, [2, 3, [4, 5]]];
+    // function flatten3(arr) {
+    //     return arr.join().split(",").map(i => parseInt(i));
+    // }
+    // console.time("flatten3");
+    // console.log(flatten3(arr));
+    // console.timeEnd("flatten3");
+
+    //
+    // /**
+    //  * 4.递归
+    //  */
+    // function flatten4(arr) {
+    //     let res = [];
+    //     arr.map(item => {
+    //         if(Array.isArray(item)) {
+    //             res = res.concat(flatten4(item));
+    //         } else {
+    //             res.push(item);
+    //         }
+    //     });
+    //     return res;
+    // }
+    // let arr = [1, [2, 3, [4, 5]]];
+    // console.time("flatten4");
+    // console.log(flatten4(arr));
+    // console.timeEnd("flatten4");
+
+
+
+    //
+    // /**
+    //  * 5. 扩展运算符
+    //  */
+    // function flatten5(arr) {
+    //     while (arr.some(item => Array.isArray(item))) {
+    //         arr = [].concat(...arr);
+    //     }
+    //     return arr;
+    // }
+    // let arr = [1, [2, 3, [4, 5]]];
+    // console.time("flatten5");
+    // console.log(flatten5(arr));
+    // console.timeEnd("flatten5");
+
+    /**
+     * 7.generator函数
+     */
+    // function* flatten6(array) {
+    //     for (const item of array) {
+    //         if (Array.isArray(item)) {
+    //             yield* flatten6(item);
+    //         } else {
+    //             yield item;
+    //         }
+    //     }
+    // }
+    // let arr = [1, [2, 3, [4, 5]]];
+    // console.time("flatten6");
+    // console.log(flatten6(arr));
+    // console.timeEnd("flatten6");
+
+    // let reg = /^1([3|5])\d{9}$/
+    // console.log(reg.test('19925632142'))
+
+    // let arr = ['17326937752', '16619896636', '13510294936']
+    // let newArr = arr.filter(m => {
+    //     let s = m.slice(-4).split('')
+    //     let e = new Set(s)
+    //     let f = Array.from(e)
+    //     return f.length == 4
+    // })
+    // console.log(newArr)
+
+    //foreach里面到底能不能有return
+    // let arr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    // arr.forEach(i => {
+    //     if (i == 3) {
+    //         return
+    //     }
+    //     console.log(i)
+    // })
+    // console.log('end')
+
+    //使用reduce求数组的和
+    // let month = [5042.48, 5042.48, 5042.48 , 7239.53, 5242.22, 5242.22, 5242.22, 5242.22, 5242.22, 5242.22, 5242.22, 5492.22]
+    // let initialValue = 0
+    // let total = month.reduce((pre, cur) => pre + cur, initialValue)
+    // console.log(total)
+    
+    //数组表达式
+    let filters
+    console.log(filters = [])
+    console.log(filters)
+</script>
+</body>
+</html>

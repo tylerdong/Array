@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>abolute</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        
+        <script src="" async defer>
+            const onButtonClick = (status, identity) => {
+                if (identity == 'guest') {
+                    if (status == 1) {
+                        console.log('guest-status-1')
+                    } else if (status == 2) {
+                        console.log('guest-status-2')
+                    } else if (status == 3) {
+                        console.log('guest-status-3')
+                    } else if (status == 4) {
+                        console.log('guest-status-4')
+                    } else if (status == 5) {
+                        console.log('guest-status-5')
+                    } else {
+                        console.log('guest-status-other')
+                    }
+                } else {
+                    if (status == 'master') {
+                        if (status == 1) {
+                            console.log('master-status-1')
+                        } else if (status == 2) {
+                            console.log('master-status-2')
+                        } else if (status == 3) {
+                            console.log('master-status-3')
+                        } else if (status == 4) {
+                            console.log('master-status-4')
+                        } else if (status == 5) {
+                            console.log('master-status-5')
+                        } else {
+                            console.log('master-status-other')
+                        }
+                    }
+                }
+            }
+
+            const actions = new Map([
+                ['guest_1', () => console.log('guest-status-1')],
+                ['guest_2', () => console.log('guest-status-2')],
+                ['guest_3', () => console.log('guest-status-3')],
+                ['guest_4', () => console.log('guest-status-4')],
+                ['guest_5', () => console.log('guest-status-5')],
+                ['master_1', () => console.log('master-status-1')],
+                ['master_2', () => console.log('master-status-2')],
+                ['master_3', () => console.log('master-status-3')],
+                ['master_4', () => console.log('master-status-4')],
+                ['msater_5', () => console.log('master-status-5')],
+                ['default', () => console.log('other')]
+            ])
+            const onButtonClickMap = (identity, status) => {
+                let action = actions.get(`${identity}_${status}`) || action.get('default')
+                action.call(this)
+            }
+        </script>
+    </body>
+</html>

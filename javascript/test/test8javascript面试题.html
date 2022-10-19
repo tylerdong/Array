@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>闭包</title>
+    <script src="../jquery.min.js"></script>
+</head>
+<body>
+<script>
+    // 函数内部可以直接读取外部的全局变量
+    //  var n = 99;
+    //  function f1() {
+    //    alert(n);
+    //  }
+    //  f1();
+
+    //函数外部无法读取函数内部的局部变量，这里会报错。在函数内部不使用var，则是全局变量
+    //  function f2() {
+    //    m = 99;
+    //  }
+    //  f2();
+    //  alert(m)
+
+    //  //正常情况下无法读取到函数内部的局域变量，可以通过变通方法获取，如下在函数f3内部定义一个函数f4，在f4内部读取f3的变量并返回这
+    //  //函数f4，外部将f3函数赋值给一个变量，再调用这个函数，再调用这个函数，就得到了这个变量
+    //  function f3() {
+    //    var a = 999;
+    //
+    //    function f4() {
+    //      return a;
+    //    }
+    //    return f4
+    //  }
+    //  var result = f3();
+    //  alert(result());
+
+    //
+    //  //上面f4就是一个闭包函数，用它来读取函数f3内部的变量，闭包可以把函数内部和外部连接起来，闭包函数还可以让变量始终保持在内存中， 这个会造成内存泄露
+    //  function f5() {
+    //    var b = 111;
+    //    nAdd = function () {
+    //      b += 1;
+    //    }
+    //    function f6() {
+    //      alert(b);
+    //    }
+    //    return f6
+    //  }
+    //  var result1 = f5();
+    //  result1();
+    //  nAdd();
+    //  result1();
+
+    // 在window对象上定义name属性
+    //  var name = 'The Window';
+    //  var object = {
+    //    name: 'My Object',
+    //    getNameFunc: function () {
+    //      // 这里的this是函数getNameFunc的当前对象
+    //      console.info(this)
+    //      return function () {
+    //        //匿名函数的执行环境是windows
+    //        console.info(this)
+    //        return this.name;
+    //      }
+    //    }
+    //  };
+    //  alert(object.getNameFunc()());
+
+    // var name1 = "The Window";
+    // var object1 = {
+    //     name1: 'My Object1',
+    //     getNameFunc: function () {
+    //         console.log(this.name1)
+    //         return () => {
+    //             // 箭头函数的this指向当前箭头函数的上一层对象，和getNameFunc上的this一样
+    //             return this.name1
+    //         }
+    //     }
+    // }
+    // alert(object1.getNameFunc()());
+
+    // var foo = function(){
+    //   var name = "exe";
+    //   return function inner(){
+    //     console.log( name );
+    //   }
+    // }
+    // var bar = foo();//这里虽然得到的是函数inner的引用，而不是那一坨代码
+    // bar();//这里开始执行inner函数，回头看看上面加粗的那句话
+
+
+    //let命令只在代码块内有效，在下面的代码块中分别使用let和var声明2个变量，在代码块外面访问，let声明的会报错，var不会报错
+    //  function  a() {
+    //    var c = 2;
+    //  }
+    //  {
+    //    let a = 10;
+    //    var b = 1;
+    //  }
+    //  alert(c);
+    //  alert(b);
+
+    //在for循环中很适合使用let命令
+
+
+    //  var tmp = new Date();
+    //  function f6() {
+    //    console.log(tmp);
+    //    if(false){
+    //      tmp = "hello world";
+    //    }
+    //  }
+    //  f6();
+
+
+    /**
+     * 输出5->5,5,5,5,5
+     * 代码输出的都是5，并且是先输出一个5，最后几乎同时输出5个5，这个是因为JavaScript有同步任务和异步任务，同步任务立即执行，异步任务先
+     * 进入到异步任务队列中，等所有的同步任务执行完毕，异步任务队列判断是否可执行，满足条件就可以执行。setTimeout就属于异步任务。
+     **/
+for(var i = 0; i < 5; i++){
+    setTimeout(function () {
+        console.log(i);
+    }, 1000)
+}
+console.log(i);
+
+
+    /**
+     * 输出5->0,1,2,3,4
+     * 使用立即执行函数表达式传递参数，setTimeout内的代码仍然在同步任务执行完立即执行，并且几乎同时执行
+     */
+    for (var i = 0; i < 5; i++) {
+        (function (j) {
+            setTimeout(function () {
+                console.log(new Date, j);
+            }, 1000)
+        })(i);
+    }
+    console.log(new Date, i);
+
+    /* 使用let变量，每次循环后JavaScript引擎都会先记住当前变量i的值并销毁，然后再用let命令生成一个新的变量i，这个变量在原来基础上加1，但是这个i
+       只能在循环内部使用，外部没有。
+    */
+/*     for (let i = 0; i < 5; i++) {
+        setTimeout(function () {
+            console.log(new Date, i);
+        }, 1000)
+    } */
+    // console.log(new Date, i);
+
+
+    /**
+     * 传入参数，JavaScript给形参传值，如果是基本类型（Number，BigInt，Undefined，String，Symbol，NaN，Boolean）传递的是值。调用
+     * output函数的时候传递值。
+     */
+    function output(i) {
+        setTimeout(function () {
+            console.log(new Date, i);
+        }, 1000);
+    }
+    for (var i = 0; i < 5; i++) {
+        output(i);   //这里传过去的i被复制了一份
+    }
+    console.log(new Date, i);
+
+    /**
+     * 输出0->1->2->3->4->5
+     * 
+     */
+    // for (var i = 0; i < 5; i++) {
+    //     (function (j) {
+    //         setTimeout(function () {
+    //             console.log(new Date, j);
+    //         }, 1000 * j); // 这里修改 0~4 的定时器时间
+    //     })(i);
+    // }
+    // setTimeout(function () {
+    //     console.log(new Date, i);
+    // }, 1000 * i);
+
+    /**
+     * Promise实现
+     * */
+/*     const task = [];
+    for (var i = 0; i < 5; i++) {  //最后要输出6，所以这里使用var
+        (j => {
+            task.push(new Promise(resolve => {
+                setTimeout(() => {
+                    console.log(new Date, j);
+                    resolve(); // 一定要改变状态
+                }, 1000 * j);
+            }))
+        })(i);
+    }
+    
+    Promise.all(task).then(() => {
+        setTimeout(() => {
+            console.log(new Date, i);
+            console.log(window.i)           //变量i是全局的
+        }, 1000);
+    }); */
+
+    /**
+     * Promise实现，promise对象放在数组中更加简洁
+     * */
+    //数组存放异步操作的 Promise
+    // const task = []
+    // const output = i => new Promise(resolve => {
+    //     setTimeout(() => {
+    //         console.log(new Date(), i);
+    //         resolve()
+    //     }, 1000 * i)
+    // })
+    //
+    // for (var i = 0; i < 5; i++) {
+    //     task.push(output(i))
+    // }
+    //
+    // Promise.all(task).then(() => {
+    //     setTimeout(() => {
+    //         console.log(new Date(), i);
+    //     }, 1000)
+    // })
+
+
+    /**
+     * async，await实现
+     */
+    // const sleep = timeountMS => new Promise(resolve => {
+    //     setTimeout(resolve, timeountMS);
+    // });
+    // (async () => {
+    //     for (let i = 0; i < 5; i++) {
+    //         await sleep(1000)
+    //         console.log(new Date(), i);
+    //     }
+    //     await sleep(1000)
+    // })()
+
+
+    // 用死循环阻塞主线程的方法
+    // function sleep(delay) {
+    //     var start = (new Date()).getTime();
+    //     while ((new Date()).getTime() - start < delay) {
+    //         continue;
+    //     }
+    // }
+    // sleep(1000)
+    // console.log('1')
+
+    //可以采用JS的异步新特性Promise类来实现
+    // sleep = function(delay) {
+    //     var p = new Promise(function(resolve, reject){ //做一些异步操作
+    //         setTimeout(function(){
+    //             resolve();
+    //         }, delay);
+    //     });
+    //     return p;
+    // }
+
+    //测试代码
+    // async function test_sleep() {
+    //     console.log("test1");
+    //     await sleep(2000);
+    //     console.log("test2");
+    // }
+
+    // test_sleep();
+
+</script>
+</body>
+</html>

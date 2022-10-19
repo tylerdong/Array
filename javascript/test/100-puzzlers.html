@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    // var END = Math.pow(2, 53);
+    // var START = END - 5;
+    // var count = 0;
+    // console.log(END);                   //      9007199254740992
+    // console.log(END + 7);               //      9007199254740997
+    // console.log(START++ <= END, START); // true 9007199254740988
+    // console.log(START++ <= END, START); // true 9007199254740989
+    // console.log(START++ <= END, START); // true 9007199254740990
+    // console.log(START++ <= END, START); // true 9007199254740991
+    // console.log(START++ <= END, START); // true 9007199254740992
+    // console.log(START++ <= END, START); // true 9007199254740992
+    // console.log(START++ <= END, START); // true 9007199254740992
+    // console.log(START++ <= END, START); // true 9007199254740992
+    // console.log(START++ <= END, START); // true 9007199254740992
+    // console.log(START++ <= END, START); // true 9007199254740992
+    // console.log(START++ <= END, START); // true 9007199254740992
+    // console.log(START++ <= END, START); // true 9007199254740992
+
+    /**
+     * 7 稀疏数组问题
+     */
+// var ary = [0,1,2];
+// ary[10] = 10;
+// console.log(ary);
+// var result = ary.filter(function(x) { return x === undefined;});
+// console.log(result);
+
+    /**
+     * 8 溢出问题
+     */
+// var two   = 0.2;
+// var one   = 0.1;
+// var eight = 0.8;
+// var six   = 0.6;
+// console.log([two - one === one, eight - six === two])
+
+    /**
+     * 9 字面量问题
+    **/
+// function showCase(value) {
+//     switch(value) {
+//         case 'A':
+//             console.log('Case A');
+//             break;
+//         case 'B':
+//             console.log('Case B');
+//             break;
+//         case undefined:
+//             console.log('undefined');
+//             break;
+//         default:
+//             console.log('Do not know!');
+//     }
+// }
+// showCase(new String('A'));
+
+    /** 10 Infinity
+     *
+     */
+// function isOdd(num) {
+//     return num % 2 == 1;
+// }
+// function isEven(num) {
+//     return num % 2 == 0;
+// }
+// function isSane(num) {
+//     return isEven(num) || isOdd(num);
+// }
+// var values = [7, 4, '13', -9, Infinity];
+// console.log(values.map(isSane)); //[true, true, true, false, false]
+
+    /** 11 parseInt
+     *
+     */
+// console.log(parseInt(3, 8)); // 3
+// console.log(parseInt(3, 2)); // NaN
+// console.log(parseInt(3, 0)); // 3
+
+    /**
+     * 12. 数组
+     * if语句中，任何一个值，只要它不是 undefined、null、 0、NaN或空字符串（""），那么无论是任何对象，即使是值为假的Boolean对象，在条件语句中都为真。
+     * 但是非严格的表==是不行的，这里数组[0]和true肯定不是相等的
+     */
+    // var a = [0];
+    // if ([0]) {
+    //     console.log(a == true);
+    // } else {
+    //     console.log("wut");
+    // }
+
+    /**
+     * 12.[]==[]
+     * []是恶魔之子
+     */
+// console.log([] == [])
+
+    /**
+     * 13.
+     * 字符串认识加号，然后将其他类型转换成字符串；但是字符串不认识减号，然后会把字符串转成整型。
+     */
+// console.log('5' + 3); // '53'
+// console.log(3 + '5'); // '35'
+// console.log('5' - 3); // 2
+
+    /**
+     * 14. 1 + - + + + - + 1
+     */
+    // console.log(1 + - + + + - + 1)
+
+    /** 15. 还是稀疏数组问题
+     * map和filter会忽略掉空元素
+     */
+    // var ary = Array(3);
+    // ary[0] = 2;
+    // let result = ary.map(function(elem) { return '1'; });
+    // console.log(result);
+
+    /** 16. arguments
+     * arguments是一个类数组对象，修改它的属性值，会影响所有引用
+     *
+     */
+    // function sidEffecting(ary) {
+    //     ary[0] = ary[2];
+    // }
+    // function bar(a,b,c) {
+    //     c = 10;
+    //     sidEffecting(arguments);
+    //     return a + b + c;
+    // }
+    // console.log(bar(1,1,1));
+
+    /** 17.
+     *
+     */
+
+    var a = 111111111111111110000,
+        b = 1111;
+    console.log(a + b);
+</script>
+</body>
+</html>

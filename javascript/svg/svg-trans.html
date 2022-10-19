@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transition</title>
+  <script src="d3.min.js"></script>
+</head>
+
+<body>
+  <div id="svgcontainer"></div>
+  <script>
+  /**
+   * transaction方法
+   * transaction方法适用于所有的选择器，它启动过度进程。此方法支持大多数选择方法，例如：attr(),style()等。但是
+   * 它不支持append和data方法
+   */
+  let t = d3.transition().duration(2000)
+  d3.select('body').transition(t).style('background-color', 'lightblue')
+  </script>
+</body>
+</html>

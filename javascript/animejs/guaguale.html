@@ -1,0 +1,148 @@
+<!DOCTYPE HTML>
+<html>
+
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>刮刮乐抽奖</title>
+  <style type="text/css">
+    .demo {
+      width: 320px;
+      margin: 10px auto 20px auto;
+      min-height: 300px;
+    }
+
+
+    .msg {
+      text-align: center;
+      height: 32px;
+      line-height: 32px;
+      font-weight: bold;
+      margin-top: 50px
+    }
+  </style>
+</head>
+
+
+<body>
+  <div id="main">
+    <div class="msg">请刮开灰色部分，<a href="javascript:void(0)" onClick="window.location.reload()">再来一次</a></div>
+    <div class="demo">
+      <canvas></canvas>
+    </div>
+  </div>
+
+
+  <script type="text/javascript">
+    var bodyStyle = document.body.style;
+    var demo=document.getElementsByClassName('demo')[0]
+   
+    var arr=[]
+    var dw=demo.clientWidth
+        dh=demo.clientHeight
+        max=dw>dh?dw:dh
+        console.log('max--->',max)
+        let a=true
+        for(let i=0;i<max;i=i+20){
+          if(a){
+            arr.push([0,i])
+            a=false
+          }else{
+            arr.push([i,0])
+            a=true
+          }
+        }
+
+    //禁用页面的鼠标选中拖动的事件，就是不运行执行选中操作
+    bodyStyle.mozUserSelect = 'none';
+    bodyStyle.webkitUserSelect = 'none';
+
+
+    var img = new Image();
+    var canvas = document.querySelector('canvas');
+    // canvas.mozUserSelect = 'none';
+    // canvas.webkitUserSelect = 'none';
+    canvas.style.position = 'absolute';
+    var imgs = ['./img/guaguale/natural-paper-texture.jpg', './img/guaguale/mehmet-turgut-kirkgoz-vnayhPykN5Q-unsplash.jpg'];//这里放置图片，图片位于刮层下面
+
+    var num = Math.floor(Math.random() * 2);
+    img.src = 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.jj20.com%2Fup%2Fallimg%2Ftp09%2F210611094Q512b-0-lp.jpg&refer=http%3A%2F%2Fimg.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1647157545&t=ea6b73a1a727c921122e9bad2ff47704';
+
+
+    img.addEventListener('load', function (e) {
+      var ctx;
+      var w = img.width * 1.5,
+        h = img.height;//刮层的大小可以自行调整
+      var offsetX = canvas.offsetLeft,
+        offsetY = canvas.offsetTop;
+      var mousedown = false;
+
+
+      function eventDown(e) {
+        e.preventDefault();
+        mousedown = true;
+      }
+
+
+      function eventUp(e) {
+        e.preventDefault();
+        mousedown = false;
+      }
+      var k=0
+      var i=0
+      var j=0
+      var index=arr.length
+      var open=false
+      
+    // let  a= setInterval(() => {
+           
+    //        console.log('i--->',i,'--j--',j,'--k--',ctx)
+    //     // with (ctx) {
+    //       ctx.beginPath()
+    //       ctx.arc(i, j, 20, 0, Math.PI * 2);
+    //       ctx.fill();
+    //     // }
+    //   }, 80)
+     
+
+
+      function eventMove(e) {
+        e.preventDefault();
+        if (mousedown) {
+          if (e.changedTouches) {
+            e = e.changedTouches[0];
+          }
+          var x = (e.clientX + document.body.scrollLeft || e.pageX) - offsetX || 0,
+            y = (e.clientY + document.body.scrollTop || e.pageY) - offsetY || 0;
+          with (ctx) {
+            beginPath()
+            arc(x, y, 10, 0, Math.PI * 2);
+            fill();
+          }
+        }
+      }
+      canvas.width = w;
+      canvas.height = h;
+      canvas.style.backgroundImage = 'url(' + img.src + ')';
+      canvas.style.backgroundSize = "100% 100%";//设置填充效果
+      ctx = canvas.getContext('2d');
+      ctx.fillStyle = 'gray';
+      ctx.fillRect(0, 0, w, h);
+      // 在前面银色图像下面画图
+      ctx.globalCompositeOperation = 'destination-out';
+
+
+      canvas.addEventListener('touchstart', eventDown);
+      canvas.addEventListener('touchend', eventUp);
+      canvas.addEventListener('touchmove', eventMove);
+      canvas.addEventListener('mousedown', eventDown);
+      canvas.addEventListener('mouseup', eventUp);
+      canvas.addEventListener('mousemove', eventMove);
+    });
+
+  </script>
+</body>
+
+
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>正则表达式</title>
+</head>
+<body>
+  <table border="1" style="border-collapse: collapse;text-align: center;">
+    <tr>
+      <th style="width: 100px;background-color: gainsboro;">姓名</th>
+      <th style="width: 150px;background-color: gainsboro;">加班工时（小时）</th>
+    </tr>
+    <tr>
+      <td>杨凡</td>
+      <td>16</td>
+    </tr>
+    <tr>
+      <td>潘振友</td>
+      <td>16</td>
+    </tr>
+    <tr>
+      <td>丁敏之</td>
+      <td>16</td>
+    </tr>
+  </table>
+
+  <table border="1" style="border-collapse: collapse;text-align: center;">
+    <tr>
+      <th style="width: 100px; background-color: gainsboro;">姓名</th>
+      <th style="width: 150px; background-color: gainsboro;">加班工时（小时）</th>
+    </tr>
+    <tr>
+      <td>宁冬</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>董广</td>
+      <td>8</td>
+    </tr>
+  </table>
+  <script>
+    let str1 = "Chapter 1", reg = /\Bapt/g
+    console.log(str1.match(reg))
+
+    const declare = {
+      name: "活动规则",
+      subTtile: "",
+      section: [
+        {
+          title: "",
+          content: [
+            "1、活动期间，用户进行宽带预约，可且仅可获得1次抽奖机会；",
+            "2、活动期间，用户进行页面分享，可且仅可获得1次抽奖机会；",
+            "3、本抽奖活动，仅限在本活动页面进行预约下单或页面分享的用户参与；",
+            "4、本活动提供的奖品中，优惠券领取3日内有效，仅限领取优惠券的账户在活动页以及和家亲APP內使用，但不可叠加使用或转赠。如账户中有同商品的多张优惠券，默认购买时直接使用最大面额的优惠券，其他优惠券无法使用；",
+            "5、本活动提供的奖品中，和家亲同享会员权益，预计中奖后24小时内发放至用户手机号码账户并正式生效，届时将以短信下发提醒。用户可下载和家亲客户端并登录完成权益领取，领取后立即生效，会员有效期为自然月（即每月1日至当月月底），过期未领取权益将失效。同一个用户（手机号）每月只可开通一次。"
+          ]
+        },
+        {
+          title: "重要提示",
+          content: [
+            "任何人通过不正当手段(包括但不限于侵犯第三人合法权益、作弊、扰乱系统、实施网络攻击、批量注册、用机器注册账户、用机器模拟客户端等方式)参与本次活动的，平台有权撤销用户所获利益并要求赔偿相关损失，包括但不限于取消用户的所有活动中奖资格等一切权益，有权取消该用户已生成的中奖订单并收回活动商品。",
+          ]
+        }
+      ]
+    }
+    console.log(JSON.stringify(declare))
+  </script>
+</body>
+</html>

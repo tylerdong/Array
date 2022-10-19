@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>积分领取</title>
+    <meta name="App-Config" content="fullscreen=yes,useHistoryState=yes,transition=yes">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name=viewport
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+    <style>
+        body {
+            width: 100%;
+            display: block;
+            margin: 0;
+            padding: 0;
+        }
+
+        .total {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100px;
+            height: 100px;
+            font-size: 14px;
+            font-weight: 600;
+            margin: 100px auto 0 auto;
+            box-shadow: -20px -20px 40px 3px rgb(255, 102, 63) inset;
+            -moz-box-shadow: -20px -20px 40px 3px rgb(255, 102, 63) inset;
+            -webkit-box-shadow: -20px -20px 40px 8px rgb(255, 102, 63) inset;
+        }
+        .totalAdd {
+            animation-name: totalScale;
+            animation-timing-function: ease-in-out;
+            /*动画只播放一次*/
+            animation-iteration-count: 1;
+            /*动画停留在最后一个关键帧*/
+            animation-fill-mode: forwards;
+            -webkit-animation-duration: 1500ms;
+            -moz-animation-duration: 1500ms;
+            -o-animation-duration: 1500ms;
+            animation-duration: 1500ms;
+        }
+
+        @keyframes totalScale {
+            50% {
+                transform: scale(1.15, 1.15);
+                -ms-transform: scale(1.15, 1.15);
+                -moz-transform: scale(1.15, 1.15);
+                -webkit-transform: scale(1.15, 1.15);
+                -o-transform: scale(1.15, 1.15);
+            }
+            to {
+                transform: scale(1, 1);
+                -ms-transform: scale(1, 1);
+                -moz-transform: scale(1, 1);
+                -webkit-transform: scale(1, 1);
+                -o-transform: scale(1, 1);
+            }
+        }
+
+
+
+        .total, .foo {
+            border-radius: 50%;
+            color: #FF0000;
+            background: rgb(255, 202, 168);
+        }
+
+        .foo {
+            display: flex;
+            font-size: 10px;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            animation-name: slideDown;
+            /*默认贝塞尔函数*/
+            animation-timing-function: ease-out;
+            /*动画时间*/
+            animation-duration: 1500ms;
+            /*动画循环播放*/
+            animation-iteration-count: infinite;
+            -moz-box-shadow: -5px -5px 10px 3px rgb(277, 102, 63) inset;
+            -webkit-box-shadow: -5px -5px 10px 3px rgb(277, 102, 63) inset;
+            box-shadow: -5px -5px 10px 3px rgb(277, 102, 63) inset;
+        }
+
+        /*小积分上下闪烁*/
+        @keyframes slideDown {
+            from {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(5px);
+                background-color: rgb(255, 234, 170);
+            }
+            to {
+                transform: translateY(0);
+                background: rgb(255, 202, 168);
+            }
+        }
+
+        .fooClear {
+            animation-name: clearAway;
+            animation-timing-function: ease-in-out;
+            animation-iteration-count: 1;
+            animation-fill-mode: forwards;
+            -webkit-animation-duration: 1500ms;
+            -moz-animation-duration: 1500ms;
+            -o-animation-duration: 1500ms;
+            animation-duration: 1500ms;
+        }
+
+        /*清除小的积分*/
+        @keyframes clearAway {
+            to {
+                top: 150px;
+                left: 207px;
+                opacity: 0;
+                visibility: hidden;
+                width: 0;
+                height: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div class="container">
+        <div :class="totalClass" ref="refTotal" @click="receiveIntegral">{{totalText}}</div>
+        <div :class="integralClass"
+             v-for="item in integral"
+             :data-angle="item.angle"
+             :style="{ left: item.x + 'px', top: item.y + 'px', animationTimingFunction: item.timing}">{{item.value}}
+        </div>
+    </div>
+</div>
+<script src="./../vue/static/vue.min.js" type="text/javascript"></script>
+<script>
+    new Vue({
+        el: "#app",
+        data() {
+            return {
+                screenSize: {width: window.screen.width, height: window.screen.height},
+                timeFun: ['ease', 'ease-in', 'ease-in-out', 'ease-out'], // 贝塞尔函数实现闪烁效果
+                totalIntegral: 1212,
+                totalText: '点击领取',
+                totalClass: {total: true, totalAdd: false},
+                integralClass: {foo: true, fooClear: false},
+                integral: [
+                    {value: 11, x: 0, y: 0, angle: 0, timing: ''},
+                    {value: 13, x: 0, y: 0, angle: 0, timing: ''},
+                    {value: 40, x: 0, y: 0, angle: 0, timing: ''},
+                    {value: 22, x: 0, y: 0, angle: 0, timing: ''},
+                    {value: 82, x: 0, y: 0, angle: 0, timing: ''},
+                    {value: 12, x: 0, y: 0, angle: 0, timing: ''}]
+            }
+        },
+        mounted() {
+            this.initLocation()
+        },
+        methods: {
+            initLocation() {
+                let xAxis = this.screenSize.width / 2
+
+                this.integral.forEach(i => {
+                    // 角度转化为弧度
+                    let angle = Math.PI * this.getRandomArbitrary(90, 270)  / 180
+                    // 根据弧度获取坐标
+                    i.x = xAxis + 100 * Math.sin(angle)
+                    i.y = 100 + 100 * Math.cos(angle)
+                    // 贝塞尔函数
+                    i.timing = this.timeFun[parseInt(this.getRandomArbitrary(0, 3))]
+                })
+                // this.integral = []
+                // for (let i = 90; i < 270; i++) {
+                //     let angle = Math.PI / 180 * i
+                //     this.integral.push({
+                //         x: xAxis - 15 + 100 * Math.sin(angle),
+                //         y: 100 + 100 * Math.cos(angle)
+                //     })
+                // }
+            },
+            // 求两个数之间的随机数
+            getRandomArbitrary(min, max) {
+                return Math.random() * (max - min) + min;
+            },
+            // 领取积分
+            receiveIntegral() {
+                this.integralClass.fooClear = true
+                this.totalClass.totalAdd = true
+                this.totalText = `${this.totalIntegral}积分`
+                let count = this.integral.length, timeoutID = null, tasks = [], totalTime = parseInt(1500 / count)
+                const output = (i) => new Promise((resolve) => {
+                    timeoutID = setTimeout(() => {
+                        // 积分递增
+                        this.totalIntegral += this.integral[i].value
+                        // 修改响应式属性
+                        this.totalText = `${this.totalIntegral}积分`
+                        resolve();
+                    }, totalTime * i);
+                })
+                for (var i = 0; i < 5; i++) {
+                    tasks.push(output(i));
+                }
+                Promise.all(tasks).then(() => {
+                    clearTimeout(timeoutID)
+                })
+            }
+        }
+    })
+</script>
+</body>
+</html>

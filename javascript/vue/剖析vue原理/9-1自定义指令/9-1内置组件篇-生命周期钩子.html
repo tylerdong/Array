@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>9-1内置组件篇-生命周期钩子</title>
+</head>
+<body>
+  <div id="app">
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    let A = {
+      template: '<div class="a"><p>A Comp</p></div>',
+      name: 'A',
+      mounted() {
+        console.log('Comp A mounted')
+      },
+      activated() {
+        console.log('Comp A activeted')
+      },
+      deactivated() {
+        console.log('Comp A deactivated')
+      }
+    }
+    let B = {
+      template: '<div class="a"><p>B Comp</p></div>',
+      name: 'B',
+      mounted() {
+        console.log('Comp B mounted')
+      },
+      activated() {
+        console.log('Comp B activeted')
+      },
+      deactivated() {
+        console.log('Comp B deactivated')
+      },
+    }
+    let vm = new Vue({
+      el: '#app',
+      template: '<div>' +
+        '<keep-alive>' +
+        '<component :is="currentComp"></component>' +
+        '</keep-alive>' +
+        '<button @click="change">switch</button>' +
+        '</div>',
+        data() {
+          return {
+            currentComp: 'A'
+          }
+        },
+        methods: {
+          change() {
+            this.currentComp = this.currentComp == 'A' ? 'B' : 'A'
+          }
+        },
+        components: {A, B}
+    })
+  </script>
+</body>
+</html>

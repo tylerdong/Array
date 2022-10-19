@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>jquery立即执行函数</title>
+  <script src="jquery.min.js"></script>
+</head>
+<body>
+<script>
+    $(document).ready(function () {
+      console.log("ready");
+    });
+    window.onload = function () {
+      console.log("onload");
+    };
+    $(function(){
+      console.log("简化版ready");
+      getInfo()
+
+    });
+    function getInfo() {
+      $.ajax({
+          url : 'http://10.27.16.25:8080/jiyunelec/broadBandNewInstall/getPlan',
+          dataType:'json',
+          type:'POST',
+          data: {
+            msgType: 'broadBandNewInstallPlanReq',
+            version: '1.0.0',
+            province: '北京市',
+            type: '5'
+          },
+          success : function(res) {
+              console(res)
+          },
+          error: function() {
+            
+          }
+      });
+    }
+    // 高考倒计时https://wannianli.tianqi.com/jishiqi/gaokaodaojishi.html
+</script>
+</body>
+</html>

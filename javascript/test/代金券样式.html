@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+    <title>平台优惠劵</title>
+    <style>
+    </style>
+</head>
+<body>
+    <script>
+      let PULLAPPLINK = "https://app.10086.cn/activity/transit/transferDownload.html"
+      let pullEndUrl = 'https%3A%2F%2Ftouch.10086.cn%2Fi%2Fmobile%2Fmycoupons.html%3Fc%3D11%26e%3D99&pageId=1461241516537720832&channelId=P00000004903'
+      let pullLink = new URL(PULLAPPLINK)
+      pullLink.searchParams.set('targetUrl', pullEndUrl)
+      let strLink = pullLink.toString()
+      console.log(strLink)
+    </script>
+</body>
+</html>

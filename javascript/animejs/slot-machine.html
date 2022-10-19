@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, minimum-scale=1, user-scalable=no">
+  <title>原生动画老虎机抽奖</title>
+  <link rel="Stylesheet" type="text/css" href="./../css/reset.css"></link>
+  <script src="./../vue/static/vue.min.js"></script>
+  <script src="./flexible.js"></script>
+  <style>
+    body {
+      width: 100vw;
+      height: 100vh;
+      background-color: rgb(235, 48, 0);
+    }
+    .slot-machine-wrap{
+      position: relative;
+      width: 100vw;
+      height: 646px;
+      background: center / 100% 100% no-repeat url("img/slot-machine/draw-wrap.png");
+    }
+    .slot-machine {
+      position: absolute;
+      top: 5.2rem;
+      left: 1.8rem;
+      margin: 0 auto;
+    }
+    .slot {
+      float: left;
+    }
+    .slot:nth-child(2) {
+      margin: 0px;
+    }
+    .slot__window {
+      width: 2.13rem;
+      height: 2rem;
+      overflow: hidden;
+    }
+    .slot__item {
+      width: 100%;
+    }
+    .slot__item__content{
+    }
+
+    .slot__item__content img {
+      width: 100%;
+    }
+    .start{
+      position: absolute;
+      left: 1.36rem;
+      top: 9.5rem;
+      width: 4.8rem;
+    }
+  </style>
+</head>
+<body>
+  <div id="app" class="slot-machine-wrap">
+    <!-- 老虎机 -->
+    <div class="slot-machine">
+      <div v-for="(slot, i) in slots" ref="slots" :key="i" class="slot">
+        <div class="slot__window">
+          <div class="slot__wrap">
+            <div v-for="(opt, idx) in slot.items" :key="idx" class="slot__item">
+              <div class="slot__item__content">
+                <img :src="opt.imgSrc" alt="" srcset="">
+              </div>
+            </div>
+
+            <div class="slot__item slot__item--copy">
+              <div class="slot__item__content">
+                <img :src="slot.items[0].imgSrc" alt="">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <img src="img/slot-machine/start.png" class="start" alt="" srcset="" @click="start">
+  </div>
+</body>
+<script>
+  const next = window.requestAnimationFrame ||
+    window.webkitRequestAnimationFrame ||
+    window.mozRequestAnimationFrame ||
+    window.msRequestAnimationFrame ||
+    window.oRequestAnimationFrame || function(cb) { window.setTimeout(cb, 1000/60) }
+  let app = new Vue({
+      el: '#app',
+      data() {
+        return {
+          slots: Array(3).fill({}).map(i => (
+            {
+              title: '',
+              items: Array(3).fill({}).map((item, j) => ({
+                imgSrc: 'img/slot-machine/' + (j+1).toString() + '.png'
+              }))
+            }
+          )),
+          opts: null,
+          startedAt: 0,
+          counter: 0
+        }
+      },
+      mounted () {
+        console.log(this.slots)
+      },
+      methods: {
+        start() {
+          this.counter = window.performance.now()
+          this.opts = this.slots.map((data, i) => {
+            const slot = this.$refs.slots[i],
+              itemHeight = document.getElementsByClassName('slot__item')[0].offsetHeight,
+              choice = 1
+            return {
+              el: slot.querySelector(".slot__wrap"),             //父元素
+              finalPos: choice * itemHeight,                     //奖品固定高度
+              startOffset: 1000 + Math.random() * 500 + i * 500, //
+              height: data.items.length * itemHeight,           //每个列的高度
+              duration: 5000 + i * 700,                         //每列持续时间递增
+              isFinished: false
+            }
+          })
+          //执行播放函数
+          next(this.animate)
+        },
+        animate(timestamp) {
+          if (!this.opts) return
+          if (!this.startedAt) {
+            this.startedAt = timestamp
+          }
+          const timeDiff = timestamp - this.startedAt
+          for (let i = 0; i < this.opts.length; i++) {
+            const opt = this.opts[i]
+            if (opt.isFinished) continue
+            const timeRemaining = Math.max(opt.duration - timeDiff, 0)
+            const power = 3
+            const offset = (Math.pow(timeRemaining, power) / Math.pow(opt.duration, power)) * opt.startOffset
+            const pos = -1 * Math.floor(offset % opt.height)
+            opt.el.style.transform = "translateY(" + pos + "px)"
+            if (timeDiff > opt.duration) {
+              opt.isFinished = true
+            }
+          }
+          if (this.opts.every(o => o.isFinished)) {
+            this.opts = null
+            this.startedAt = null
+            console.log((window.performance.now() - this.counter) / 1000)
+          } else {
+            next(this.animate)
+          }
+        }
+      },
+
+  })
+</script>
+
+</html>

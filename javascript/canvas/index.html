@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Canvas</title>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<canvas id="stockGraph" width="150" height="150">
+    current stock price: $3.15 +0.15
+</canvas>
+<canvas id="clock" width="150" height="150">
+    <img src="./../images/pic1.jpg" width="150" height="150" alt=""/>
+</canvas>
+<script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = 'green';
+    ctx.fillRect(10, 10, 150, 100);
+
+
+    r = 100;//半径
+    o = [200, 150]//圆心
+    x1 = []
+    y1 = []
+    // for (i = 0; i < 360; i++) {
+    //     //调整i的步长来求div的分布点坐标
+    //     angle = Math.PI / 180 * i;
+    //     x1[i] = o[0] + r * Math.sin(angle)
+    //     y1[i] = o[1] + r * Math.cos(angle)
+    //     div = document.createElement("div")
+    //     div.style.top = y1[i] + "px"
+    //     div.style.left = x1[i] + "px"
+    //     div.style.width = "100px";
+    //     div.style.height = "100px";
+    //     div.style.position = "absolute";
+    //     div.style.border = "1px solid #EEE";
+    //     div.style.background = "#CCC";
+    //     document.body.appendChild(div);
+    // }
+
+    for (i = 0; i < 180; i += 10) {
+        // 调整i的步长来求div的分布点坐标
+        angle = Math.PI / 180 * i;
+        x1[i] = o[0] + 400 + r * Math.sin(angle);
+        y1[i] = o[1] + r * Math.cos(angle);
+        div = document.createElement("div");
+        div.style.top = y1[i] + "px";
+        div.style.left = x1[i] + "px";
+        div.style.width = "100px";
+        div.style.height = "100px";
+        div.style.position = "absolute";
+        div.style.border = "1px solid #EEE";
+        div.style.background = "#CCC";
+        document.body.appendChild(div);
+    }
+    // for (i = 0; i < 10; i++) {
+    //     //调整i的步长来求div的分布点坐标
+    //     angle = (Math.PI / 180) * 360 * Math.random();
+    //     x1[i] = o[0] + r * Math.sin(angle)
+    //     y1[i] = o[1] + 300 + r * Math.cos(angle)
+    //     div = document.createElement("div")
+    //     div.style.top = y1[i] + "px"
+    //     div.style.left = x1[i] + "px"
+    //     div.style.width = "50px";
+    //     div.style.height = "50px";
+    //     div.style.position = "absolute";
+    //     div.style.border = "1px solid #EEE";
+    //     div.style.background = "#CCC";
+    //     document.body.appendChild(div);
+    // }
+</script>
+</body>
+</html>

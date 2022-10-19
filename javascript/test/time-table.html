@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>文字垂直滚动</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+
+    <!-- Link Swiper's CSS -->
+    <link rel="stylesheet" href="./../swiper/swiper.min.css">
+
+    <!-- Demo styles -->
+    <style>
+        html, body { position: relative; height: 100%; }
+        body { background: #eee; font-family: Helvetica Neue, Helvetica, Arial, sans-serif; font-size: 14px; color: #000; margin: 0; padding: 0; }
+
+        /* 公告滚动 */
+        .notice-swiper { position: relative; width: 600px; height: auto; padding: 10px; margin: 30px auto; border: 2px solid #222; background-color: #fff; }
+        .notice-swiper .swiper-container { width: 100%; height: 60px; }
+        .notice-swiper .swiper-slide { height: 20px; line-height: 20px; }
+        .notice-swiper .swiper-slide a { color: #333; }
+        .notice-swiper .swiper-pagination { position: absolute; }
+        .notice-swiper .swiper-container-vertical>.swiper-pagination-bullets .swiper-pagination-bullet { margin: 3px 0; display: block; }
+        .notice-swiper .swiper-button-next, .notice-swiper .swiper-button-prev { position: absolute; left: auto; right: 0; top: -22px; margin: 0; width: 16px; height: 16px; background-size: 16px 10px; -webkit-transform: rotate(90deg); -moz-transform: rotate(90deg); -ms-transform: rotate(90deg); -o-transform: rotate(90deg); transform: rotate(90deg); }
+        .notice-swiper .swiper-button-prev { margin-right: 20px; }
+    </style>
+</head>
+<body>
+<div class="notice-swiper">
+    <!-- Swiper -->
+    <div class="swiper-container">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide"><a href="#">2006年1月John Resig等人创建了jQuery</a></div>
+            <div class="swiper-slide"><a href="#">8月，jQuery的第一个稳定版本</a></div>
+            <div class="swiper-slide"><a href="#">事件处理和AJAX交互</a></div>
+            <div class="swiper-slide"><a href="#">jQuery的性能达到了Prototype</a></div>
+            <div class="swiper-slide"><a href="#">Mootools以及Dojo等同类JavaScript库的水平</a></div>
+            <div class="swiper-slide"><a href="#">2008年5月，jQuery 1.2.6版发布</a></div>
+            <div class="swiper-slide"><a href="#">微软和诺基亚公司正式宣布支持开源的jQuery库</a></div>
+            <div class="swiper-slide"><a href="#">它使用了全新的选择符引擎Sizzle</a></div>
+            <div class="swiper-slide"><a href="#">2010年1月，也是jQuery的四周年生日</a></div>
+            <div class="swiper-slide"><a href="#">jQuery通过eval方法来解析json对象</a></div>
+        </div>
+        <!-- Add Pagination -->
+        <div class="swiper-pagination"></div>
+    </div>
+    <!-- Add Arrows -->
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
+</div>
+<div>
+    注意：如果公告总高度过低，且行数太多的时候，垂直分页点在滚动到后面的时候，当前点会被遮挡！所以为保证分页点的美观，如果公告总高度比较低，应该限制总行数。
+</div>
+
+<script src="./../jquery.min.js"></script>
+<!-- Swiper JS -->
+<script src="./../swiper/swiper.min.js"></script>
+
+<!-- Initialize Swiper -->
+<script>
+    var mySwiper = new Swiper('.notice-swiper .swiper-container', {
+        direction: 'vertical',
+        slidesPerView: 3, // 每页显示几个slide
+        spaceBetween: 0, // slide的间距px
+        followFinger : false, //
+        speed: 400, // 速度
+        mousewheel: true, // 鼠标滚轮控制
+        loop: $(".notice-swiper .swiper-slide").length > 2, // 循环
+        autoplay: {
+            delay: 1000,
+            stopOnLastSlide: false,
+            disableOnInteraction: true,
+        },
+        // pagination: {
+        //     el: '.notice-swiper .swiper-pagination',
+        //     clickable: true,
+        //     dynamicBullets: true
+        // },
+        // navigation: {
+        //     nextEl: '.notice-swiper .swiper-button-next',
+        //     prevEl: '.notice-swiper .swiper-button-prev',
+        // },
+    });
+    // 鼠标移入停止自动滚动
+    $('.notice-swiper .swiper-slide').mouseenter(function() {
+        mySwiper.autoplay.stop();
+    })
+    // 鼠标移出开始自动滚动
+    $('.notice-swiper .swiper-slide').mouseleave(function() {
+        mySwiper.autoplay.start();
+    })
+</script>
+</body>
+</html>

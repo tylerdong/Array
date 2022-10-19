@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>9-1内置组件篇</title>
+</head>
+<body>
+  <div id="app">
+    <button @click="switchComp('child1')">组件1</button>
+    <button @click="switchComp('child2')">组件2</button>
+    <keep-alive>
+      <component :is="chooseComponent"></component>
+    </keep-alive>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    var child1 = {
+        template: '<div>组件1:<input type="text"/></div>',
+      }
+      var child2 = {
+        template: '<div>组件2:<input type="text"/></div>'
+      }
+      var vm = new Vue({
+        el: '#app',
+        components: {
+          child1,
+          child2,
+        },
+        data() {
+          return {
+            chooseComponent: 'child1',
+          }
+        },
+        methods: {
+          switchComp(component) {
+            this.chooseComponent = component;
+          }
+        }
+      })
+  </script>
+</body>
+</html>

@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <base th:href="@{/}">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="page-view-size" content="1280*720"/>
+    <title>联通中秋活动</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/public/css/common.css}"/>
+    <style type="text/css" th:inline="text">
+        body {
+            overflow-y: hidden;
+            top: 0px;
+            width: 1280px;
+            height: 720px;
+            background-repeat: no-repeat;
+            position: absolute;
+            margin: 0;
+            padding: 0;
+            background-image: url('[[${pageConfig.fBgimg}]]');
+            background-repeat: no-repeat;
+        }
+
+        .loop-pie {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width: 1px;
+            height: 1px;
+        }
+
+        .loop-pie-line {
+            position: absolute;
+            width: 50%;
+            height: 100%;
+            top: 0;
+            overflow: hidden;
+        }
+
+        .loop-pie-l {
+            top: 0px;
+            left: 0px;
+        }
+
+        .loop-pie-r {
+            top: 0px;
+            -webkit-transform: rotate(180deg);
+            right: 0px
+        }
+
+        .loop-pie-c {
+            width: 200%;
+            height: 100%;
+            border: 4px solid transparent;
+            border-radius: 50%;
+            position: absolute;
+            box-sizing: border-box;
+            top: 0;
+            -webkit-transform: rotate(-45deg);
+        }
+
+        .loop-pie-rm {
+            border-top: 10px solid #946b61;
+            border-left: 10px solid #946b61;
+            border-bottom: 10px solid #d7b22d;
+            border-right: 10px solid #d7b22d;
+        }
+
+        .loop-pie-lm {
+            border-top: 10px solid #946b61;
+            border-left: 10px solid #946b61;
+            border-bottom: 10px solid #d7b22d;
+            border-right: 10px solid #d7b22d;
+        }
+    </style>
+</head>
+<body>
+<div style="width:1280px;height:720px;overflow:hidden;">
+    <!--中秋活动主页面-->
+    <div id="activity" style="position: absolute;width: 1280px;height: 720px;">
+        <div id="cjcs" style="position: absolute; top: 10px; left: 10px; width: 140px;height: 131px;">
+            <!--<img th:src="${resourcePath}+'cjcs.png'">-->
+        <div id="lottery_num" style="position: absolute; top: 42px; left: 158px; width: 210px;height: 100px;" th:text="${lotteryCount}" >0</div>
+        </div>
+
+        <div id="ybgs" style="position: absolute; top: 120px; left: 10px; width: 140px;height: 131px;">
+            <!--<img th:src="${resourcePath}+'ybgs.png'">-->
+            <div id="cake_num" style="position: absolute; top: 27px; left: 144px; width: 210px;height: 100px;" th:text="${moonCount}">0</div>
+        </div>
+
+        <div id="cjan" style="position: absolute; top: 210px; left: 10px; width: 210px;height: 100px;">
+            <img th:src="${resourcePath}+'syqt/cjan.png'" style="width: 210px;height: 100px;">
+        </div>
+
+
+        <div id="dgcp_1" style="position: absolute; top: 410px; left: 40px; width: 150px;height: 150px;">
+            <img th:src="${resourcePath}+'syqt/dgcp.png'" style="width: 150px;height: 150px;">
+        </div>
+        <div id="dgcp_2" style="position: absolute; top: 410px; left: 200px; width: 150px;height: 150px;">
+            <img th:src="${resourcePath}+'syqt/dgcp.png'" style="width: 150px;height: 150px;">
+        </div>
+        <div id="dgcp_3" style="position: absolute; top: 560px; left: 40px; width: 150px;height: 150px;">
+            <img th:src="${resourcePath}+'syqt/dgcp.png'" style="width: 150px;height: 150px;">
+        </div>
+        <div id="dgcp_4" style="position: absolute; top: 560px; left: 200px; width: 150px;height: 150px;">
+            <img th:src="${resourcePath}+'syqt/dgcp.png'" style="width: 150px;height: 150px;">
+        </div>
+
+        <div id="jryx" style="position: absolute; top: 370px; left: 460px; width: 270px;height: 100px;">
+            <img th:src="${resourcePath}+'syqt/jryx.png'" style="width: 270px;height: 100px;">
+        </div>
+
+
+        <div id="hdgz" style="position: absolute; top: 10px; left: 1110px; width: 130px;height: 100px;">
+            <img th:src="${resourcePath}+'syqt/hdgz.png'" style="width: 130px;height: 100px;">
+        </div>
+
+        <div id="hjxx" style="position: absolute; top: 120px; left: 1110px; width: 130px;height: 100px;">
+            <img th:src="${resourcePath}+'syqt/hjxx.png'" style="width: 130px;height: 100px;">
+        </div>
+
+    </div>
+
+    <!--活动规则-->
+    <div id="rule" style="position: absolute;display: none;width: 1280px;height: 720px;">
+        <img th:src="${resourcePath}+'activity_rule.png'" width="1280" height="720">
+        <!--关闭-->
+        <div id="rule_close" style="position: absolute;left: 500px;top: 610px;width: 261px;height: 99px;">
+            <img th:src="${resourcePath}+'rule_close.png'" width="261" height="99">
+        </div>
+    </div>
+
+    <div id="dialog" style="position: absolute; top: 220px; left: 925px; width: 330px;height: 84px;">
+        <img src="" alt=""/>
+    </div>
+
+    <!--游戏主页-->
+    <div id="epg_box_div" style="position: absolute;width: 1280px;height: 720px;display: block;"
+         th:if="${page == 'game'}">
+        <img id="smashEggsBg" th:src="${resourcePath}+'game/game_bj.png'" width="1280" height="720">
+        <div id="divFocus" style="POSITION: absolute; TOP:0px; LEFT:0px; width:0px; height:0px;z-index: 99">
+            <!-- 焦点图片-->
+            <img id="img_Focus" width="100%" height="100%" src=""/>
+        </div>
+
+        <div id="divScore"
+             style="POSITION: absolute; TOP:28px; LEFT:662px; width:80px; height:44px;line-height:44px;font-size: 30px; z-index: 99;color: black">
+            0
+        </div>
+
+        <!--<div id="rabbit" style="top: 600px;left: 1000px;height: 150px;width: 150px">
+            <img th:src="${resourcePath}+'rabbit.png'" style="width: 150px;height: 150px;">
+        </div>-->
+
+        <!--    <div id="time" style="POSITION: absolute; TOP:17px; LEFT:1170px; width:80px; height:44px;line-height:44px;font-size: 30px; color:red;z-index: 99">60
+            </div>-->
+
+        <!--弹出图-->
+        <div id="upImage" style="display: none;position: absolute;width: 1280px;height:720px;z-index: 99">
+            <img id="endImg" src=""
+                 style="position: absolute;left:0px;top: 0px;width: 1280px;height:720px;">
+        </div>
+
+    </div>
+
+    <!--页面提示-->
+    <div id="tips" style="position: absolute;display: none;width: 1280px;height: 720px;">
+        <img id="tips_bg" src="" width="1280" height="720">
+        <!--关闭-->
+        <div id="tips_close" style="position: absolute;left: 590px;top: 420px;width: 145px;height: 70px;">
+            <img th:src="${resourcePath}+'tips/det.png'" width="200" height="140">
+        </div>
+    </div>
+
+    <!-- 抽奖结果页面 -->
+    <div id="lottery_result" style="position: absolute;width: 1280px;height: 720px;display: none;">
+        <img id="lottery_result_beijing" src="" width="1280" height="720">
+        <div id ="lottery_close" style="position: absolute;top: 160px;left: 970px; width: 50px;height: 50px;">
+            <img th:src="${resourcePath}+'lottery/close.png'" width="80" height="80">
+        </div>
+        <div id="lottery_ok" style="position: absolute;top: 440px;left: 590px; width: 145px;height: 70px;">
+            <img th:src="${resourcePath}+'lottery/det.png'" width="200" height="140">
+        </div>
+        <div id="close_lottery" style="position: absolute;top: 440px;left: 590px; width: 145px;height: 70px;">
+            <img th:src="${resourcePath}+'lottery/det.png'" width="200" height="140">
+        </div>
+    </div>
+
+    <div id="settlement" style="position: absolute;width: 1280px;height: 720px;display: none;">
+        <img id="settlement_bg" src="" width="1280" height="720">
+        <div id="over_score"
+             style="POSITION: absolute; TOP:360px; LEFT:520px; width:80px; height:44px;line-height:44px;font-size: 50px; z-index: 99;color: black">
+            0
+        </div>
+        <div id="continue_game" style="position: absolute;top: 440px;left: 450px; width: 180px;height: 70px;">
+            <img th:src="${resourcePath}+'game/continue.png'" width="200" height="140">
+        </div>
+        <div id="go_lottery" style="position: absolute;top: 432px;left: 630px; width: 180px;height: 70px;">
+            <img th:src="${resourcePath}+'game/todraw.png'" width="240" height="140">
+        </div>
+    </div>
+
+    <!--页面提示-->
+    <div id="enter_phone" style="position: absolute;display: none;width: 1280px;height: 720px;">
+        <img id="phone_bg" src="" width="1280" height="720">
+        <!--关闭-->
+        <!--<div id="phone_input" th:text="${userPhone}" style="position: absolute;left: 450px;top: 325px;width: 420px;height: 70px;border-radius: 28px;border: 0px;color: #222222;" placeholder="请输入手机号码"></div>-->
+        <input id="phone_input" type="text" style="position: absolute;left: 450px;top: 325px;width: 420px;height: 70px;border-radius: 20px;border: 0px;color: #222222;">
+        <div id="submit_phone" style="position: absolute;left: 590px;top: 420px;width: 145px;height: 70px;">
+            <img th:src="${resourcePath}+'phoneNum/determine.png'" width="200" height="140">
+        </div>
+    </div>
+
+    <div id="focusDiv" style="position: absolute; left: 0px; top: 0px; width: 0px; height: 0px;"
+         class="focusDivStyle"></div>
+</div>
+
+<script type="text/javascript" th:src="@{/public/js/Epg.js}"></script>
+<script type="text/javascript" th:src="@{/public/js/game.core.js}"></script>
+<script type="text/javascript" th:src="@{/public/js/prototype.min.js}"></script>
+<script type="text/javascript" th:inline="javascript">
+    var basePath = [[${#httpServletRequest.getScheme() + '://' + #httpServletRequest.getServerName() + ':' + #request.getServerPort()  + #request.getContextPath() + '/'}]];//项目路径
+    var loginId = [[${loginId}]];//登录Id
+    var resourcePath = [[${resourcePath}]];//资源路径
+    var page = [[${page}]]; // 当前显示页面
+    var lotteryCount = [[${lotteryCount}]];//剩余抽奖次数
+    var moonCount = [[${moonCount}]];//月饼数量
+    var buttons = [
+        {
+            id: "cjan",
+            name: "抽奖",
+            up: "null",
+            down: "dgcp_1",
+            left: "null",
+            right: "jryx",
+            action: startHandler,
+            blurHandler: blurHandler,
+            focusHandler: focusHandler
+        },
+        {
+            id: "dgcp_1",
+            name: "订购产品1",
+            up: "cjan",
+            down: "dgcp_3",
+            left: "null",
+            right: "dgcp_2",
+            action: orderProduct,
+            blurHandler: blurHandler,
+            focusHandler: focusHandler
+        },
+        {
+            id: "dgcp_2",
+            name: "订购产品2",
+            up: "cjan",
+            down: "dgcp_4",
+            left: "dgcp_1",
+            right: "jryx",
+            action: orderProduct,
+            blurHandler: blurHandler,
+            focusHandler: focusHandler
+        },
+        {
+            id: "dgcp_3",
+            name: "订购产品3",
+            up: "dgcp_1",
+            down: "null",
+            left: "null",
+            right: "dgcp_4",
+            action: orderProduct,
+            blurHandler: blurHandler,
+            focusHandler: focusHandler
+        },
+        {
+            id: "dgcp_4",
+            name: "订购产品4",
+            up: "dgcp_2",
+            down: "null",
+            left: "dgcp_3",
+            right: "jryx",
+            action: orderProduct,
+            blurHandler: blurHandler,
+            focusHandler: focusHandler
+        },
+        {
+            id: "jryx",
+            name: "进入游戏",
+            up: "cjan",
+            down: "dgcp_1",
+            left: "dgcp_2",
+            right: "hjxx",
+            action: joinGame,
+            blurHandler: blurHandler,
+            focusHandler: focusHandler
+        },
+        {
+            id: "rule_close",
+            name: "规则关闭",
+            up: "null",
+            down: "null",
+            left: "null",
+            right: "null",
+            action: closeHandler,
+            blurHandler: blurHandler,
+            focusHandler: focusHandler
+        },
+        {
+            id: "hdgz",
+            name: "活动规则",
+            up: "null",
+            down: "hjxx",
+            left: "jryx",
+            right: "null",
+            action: showRules,
+            blurHandler: blurHandler,
+            focusHandler: focusHandler
+        },
+        {
+            id: "hjxx",
+            name: "获奖信息",
+            up: "hdgz",
+            down: "null",
+            left: "jryx",
+            right: "null",
+            action: showRules,
+            blurHandler: blurHandler,
+            focusHandler: focusHandler
+        },
+        {
+            id: "rabbit",
+            name: "小兔子",
+            up: "null",
+            down: "null",
+            left: "null",
+            right: "null",
+            action: showRules,
+            blurHandler: blurHandler,
+            focusHandler: focusHandler
+        },
+        {id: "tips_close", name: "关闭提示页面", up: "null", down: "null", left: "null", right: "null", action: closeHandler, blurHandler: blurHandler, focusHandler: focusHandler},
+        {id: "lottery_close", name: "关闭抽奖页面", up: "null", down: "lottery_ok", left: "lottery_ok", right: "null", action: closeHandler, blurHandler: blurHandler, focusHandler: focusHandler},
+        {id: "lottery_ok", name: "确认中奖", up: "lottery_close", down: "null", left: "null", right: "lottery_close", action: enterPhoneNum, blurHandler: blurHandler, focusHandler: focusHandler},
+        {id: "close_lottery", name: "确认中奖", up: "null", down: "null", left: "null", right: "null", action: closeHandler, blurHandler: blurHandler, focusHandler: focusHandler},
+        {id: "continue_game", name: "继续游戏", up: "null", down: "null", left: "null", right: "go_lottery", action: closeHandler, blurHandler: blurHandler, focusHandler: focusHandler},
+        {id: "phone_input", name: "输入号码", up: "null", down: "submit_phone", left: "null", right: "null", action: savePhoneNum, blurHandler: blurHandler, focusHandler: focusHandler},
+        {id: "submit_phone", name: "提交号码", up: "phone_input", down: "null", left: "null", right: "null", action: savePhoneNum, blurHandler: blurHandler, focusHandler: focusHandler},
+
+    ];
+
+    //显示养鸡规则
+    function showRules() {
+        show("rule");
+        Epg.Button.set("rule_close");
+    }
+    
+    function enterPhoneNum() {
+        $js('lottery_result').style.display='none';
+        $js('phone_bg').src=resourcePath +  "phoneNum/bj.png";
+        $js('enter_phone').style.display='block';
+        Epg.Button.set('phone_input')
+    }
+
+    // 保存电话号码
+    function savePhoneNum(current) {
+        var phone = $js('phone_input').innerHTML;
+        if(!(/^1(3|4|5|6|7|8|9)\d{9}$/.test(phone))){
+            console.info("手机号码有误，请重填");
+            $js('inputPhoneFail').style.display='block';
+            $js('previousFocusButton').value=current.id;
+            Epg.Button.set("inputPhoneFailClose");
+            return false;
+        } else {
+            window.location.href="client/activity/moon/savePhoneNum?loginId="+loginId+"&phoneNum="+phone;
+        }
+    }
+
+
+    //通用关闭弹窗
+    function closeHandler() {
+        window.location.href=[[@{/client/activity/moon/index.html}]]+"?loginId="+loginId;
+    }
+
+    function joinGame() {
+        if(lotteryCount<1){
+            $js('tips_bg').src=resourcePath +  "tip/csbz.png";
+            lottery_result
+            Epg.Button.set('tips_close');
+        }else {
+            window.location.href = "client/activity/moon/game.html?loginId=" + loginId;
+        }
+        //弹出游戏页面
+    }
+
+    //抽奖
+    function startHandler() {
+        if(moonCount <10){
+            $js('tips_bg').src=resourcePath +  "tips/not_moon.png";
+            $js('tips').style.display='block';
+            Epg.Button.set('tips_close');
+            return ;
+        } else {
+            moonCount = lotteryCount - 10;
+            $js('lottery_num').innerHTML=lotteryCount;
+            Epg.ajax({
+                url: basePath + "client/activity/moon/lottery",
+                type: 'POST', // 默认GET
+                async: true, // 默认异步
+                dataType: 'json', // 预期服务器返回的数据类型
+                data: {'loginId':loginId},
+                success: function (result) { //抽奖结果
+                    console.info(result);
+                    setTimeout(function () {
+                        if(result.code == 1){
+                            window.location.href=basePath+"/client/newPage/"+result.msg+"?loginId="+loginId;
+                        } else {
+                            if(result.msg =='not_win.png'){
+                                $js('lottery_result_beijing').src=resourcePath +"lottery/"+result.msg;
+                                $js('lottery_result').style.display='block';
+                                $js('lottery_ok').style.display='none';
+                                $js('lottery_close').style.display='none';
+                                Epg.Button.set('close_lottery');
+                            }else {
+                                $js('lottery_result_beijing').src=resourcePath +"lottery/"+result.msg;
+                                $js('lottery_result').style.display='block';
+                                $js('close_lottery').style.display='none';
+                                Epg.Button.set('lottery_ok');
+                            }
+                        }
+                    },100);
+                },
+                error: function (xhr) {
+                    console.error(xhr);
+                }
+            });
+        }
+    }
+
+    //订购产品
+    function orderProduct(current) {
+        var url = current.url;
+        window.location.href = url;
+    }
+
+    (function () {
+        //会员和普通用户默认光标不同
+        var defaultFocus = 'jryx';
+        if (page == 'game') {
+
+        } else {
+            defaultFocus = 'jryx';
+            if(moonCount>=10){
+                Epg.getImage($js("dialog")).src = resourcePath +  "syqt/dialog.png";
+            }
+            Epg.Button.init({defaultButtonId: defaultFocus, buttons: buttons});//焦点按钮初始化
+        }
+    })();
+
+    Epg.eventHandler = function (keyCode) {
+        if (Epg.Key.isLeft(keyCode)) {
+            if(page=='game'){
+                if (flag == 1) {
+                    myPage.changeActive(eval("myPage.buttons[currActive]." + 'left'));
+                    return;
+                }else {
+                    Epg.Button.move('left');
+                }
+            }else {
+                Epg.Button.move('left');
+            }
+        } else if (Epg.Key.isRight(keyCode)) {
+            if(page=='game'){
+                if (flag == 1) {
+                    myPage.changeActive(eval("myPage.buttons[currActive]." + 'right'));
+                    return;
+                }else {
+                    Epg.Button.move('right');
+                }
+            }else {
+                Epg.Button.move('right');
+            }
+            Epg.Button.move('right');
+        } else if (Epg.Key.isUp(keyCode)) {
+            if(page=='game'){
+                if (flag == 1) {
+                    myPage.changeActive(eval("myPage.buttons[currActive]." + 'up'));
+                    return;
+                }else {
+                    Epg.Button.move('up');
+                }
+            }else {
+                Epg.Button.move('up');
+            }
+            Epg.Button.move('up');
+        } else if (Epg.Key.isDown(keyCode)) {
+            if(page=='game'){
+                if (flag == 1) {
+                    myPage.changeActive(eval("myPage.buttons[currActive]." + 'down'));
+                    return;
+                }else {
+                    Epg.Button.move('down');
+                }
+            }else {
+                Epg.Button.move('down');
+            }
+            Epg.Button.move('down');
+        } else if (Epg.Key.isEnter(keyCode)) {
+            Epg.Button.click();
+        } else if (Epg.Key.isBack(keyCode)) {
+            back();
+        } else if (Epg.Key.isNumber(keyCode)) {//数字键
+            console.info(Epg.Key.getNumber(keyCode));
+        }
+    };
+
+
+    function blurHandler(previous) {
+        var id = previous.id;
+        var element = $js(id);
+        if (previous.image) {
+            Epg.getImage(element).src = resourcePath + previous.image;
+        }
+    }
+
+    function focusHandler(current) {
+        var id = current.id;
+        var element = $js(id);
+        if (current.focusImage) {
+            hidden("focusDiv");
+            Epg.getImage(element).src = resourcePath + current.focusImage;
+        } else {
+            show("focusDiv");
+            focusElement(element, '10px');//设置焦点框
+        }
+    }
+
+    var flag = 1;
+
+    if (page == 'game') {
+        /**
+         * 游戏初始化，每一个关卡都必须初始化
+         */
+        GameCore.init({
+            "contentId": 111,
+            "currentLevel": 1,
+            "totalLevel": 1,
+            "loginId": loginId,
+        });
+
+        //游戏结算处理
+        function end(result) {
+            debugger
+            $js('a_1').style.display='none';
+            $js('a_2').style.display='none';
+            $js('a_3').style.display='none';
+            $js('divScore').style.display='none';
+            $js('settlement_bg').src=resourcePath +  "game/account.png";
+            $js('settlement').style.display='block';
+            document.getElementById('over_score').innerHTML = result;
+            flag = 2;
+            lotteryCount = lotteryCount-1;
+            Epg.Button.set("go_lottery");
+        }
+
+/*
+        GameCore.interface = {
+            //焦点移动 dir: left、right、up、down
+            onMove: function (dir) {
+                if (flag == 1) {
+                    myPage.changeActive(eval("myPage.buttons[currActive]." + dir));
+                    return;
+                }
+
+                Epg.Button.move(dir);
+            },
+
+            //确定按钮
+            onClick: function () {
+
+                Epg.Button.click();
+            },
+
+            //按数字键按钮 number: 0~9
+            onClickNumber: function (number) {
+            },
+
+            //退出游戏前，可能需要销毁 setTiemout、setInterval等
+            onStop: function () {
+                clearInterval(timeInter);
+                clearInterval(myPage.sgDivInter1);
+                clearInterval(myPage.sgDivInter2);
+            }
+        };
+*/
+
+        var buttons = [
+            {
+                id: "leftOption",
+                up: "0",
+                down: "0",
+                left: '0',
+                right: 'rightOption',
+                action: commonAction,
+                focusHandler: commonFocus,
+                blurHandler: commonBlur
+            },
+            {
+                id: "rightOption",
+                up: "0",
+                down: "0",
+                left: 'leftOption',
+                right: '0',
+                action: commonAction,
+                focusHandler: commonFocus,
+                blurHandler: commonBlur
+            },
+            {id: "continue_game", name: "继续游戏", up: "null", down: "null", left: "null", right: "go_lottery", action: continueGame, blurHandler: blurHandler, focusHandler: focusHandler},
+            {id: "go_lottery", name: "去抽奖", up: "null", down: "null", left: "continue_game", right: "null", action: closeHandler, blurHandler: blurHandler, focusHandler: focusHandler},
+            {id: "tips_close", name: "关闭提示页面", up: "null", down: "null", left: "null", right: "null", action: closeHandler, blurHandler: blurHandler, focusHandler: focusHandler},
+        ];
+
+        function continueGame() {
+            if(lotteryCount < 1){
+                $js('settlement').style.display='none';
+                $js('tips_bg').src=resourcePath +  "tip/csbz.png";
+                $js('tips').style.display='block';
+                Epg.Button.set('tips_close');
+                return ;
+            }else {
+                window.location.href = "client/activity/moon/game.html?loginId=" + loginId;
+            }
+        }
+
+        //成功、失败、通过后弹出图通用确认方法
+        function commonAction(current) {
+            Epg.call($js(current.id).getAttribute("function"));
+        }
+
+        function commonFocus(current) {
+            var obj = $js(current.id);
+            obj.src = obj.getAttribute("focusImage");
+
+        }
+
+        function commonBlur(previous) {
+            var obj = $js(previous.id);
+            obj.src = obj.getAttribute("linkImage");
+        }
+    }
+</script>
+<script type="text/javascript">
+    //页面全局加载对象、逻辑、布局、计算等处理
+    if (page == 'game') {
+        var LoadInit = Class.create({
+            initialize: function (key) {
+                this.styleTemplate = new Template('position: absolute; top: #{top}px; left: #{left}px; height: #{height}px; width: #{width}px;'); //syle 样式模板
+                this.focusParam = focusParam; 	//焦点移动配置信息
+                this.buttons = {}; 				//元素按钮配置
+                this.time = 0; 				//默认定时时间
+                this.sgs = new Array();			//水果生成位置数组
+                this.moveIds = new Array();		//移动的水果id
+                this.cheNum = 2;				//车的位置
+                this.score = 0;					//已获得积分
+                this.imgNum = 1;				//水果图片数量
+                this.sgDivInter1;				//生成水果的线程
+                this.sgDivInter2;				//移动水果的线程
+                this.useNum = 0;                //已产生多少元素
+                this.initMove();				//初始化焦点配置
+
+
+                this.moveInfo1 = this.EleInfo('200', '300', '410', '200', resourcePath + 'tm.png');
+                this.moveInfo2 = this.EleInfo('200', '300', '410', '500', resourcePath + 'tm.png');
+                this.moveInfo3 = this.EleInfo('200', '300', '410', '800', resourcePath + 'tm.png');
+                this.addPageElement('a_1', this.moveInfo1, 'move');
+                this.addPageElement('a_2', this.moveInfo2, 'move');
+                this.addPageElement('a_3', this.moveInfo3, 'move');
+
+                this.sgs[0] = this.EleInfo('70', '70', '0', '220', 'cake.png');
+                this.sgs[1] = this.EleInfo('70', '70', '0', '520', 'cake.png');
+                this.sgs[2] = this.EleInfo('70', '70', '0', '820', 'cake.png');
+
+                //this.addPageElement('sg_1', this.sgs[0], 'sg');
+                //this.addPageElement('sg_2', this.sgs[1], 'sg');
+                //this.addPageElement('sg_3', this.sgs[2], 'sg');
+
+                this.start();
+            },
+            addPageElement: function (id, eleInfo, cla) {	//增加页面元素
+                var newElement = new Element('div', {
+                    id: id,
+                    'class': cla,
+                    style: this.styleTemplate.evaluate(eleInfo)
+                });
+                if ('ele' == cla) {
+                    newElement.writeAttribute({
+                        url: this.buttons[id].action,
+                        onin: 'javascript:myPage.oninFun("' + id + '");',
+                        onout: 'javascript:myPage.onoutFun("' + id + '");'
+                    });
+                    var newImgElement = new Element('img', {
+                        id: 'img_' + id.replace('a_', ''),
+                        width: eleInfo.width,
+                        height: eleInfo.height,
+                        src: this.buttons[id].focusImage
+                    });
+                    newElement.appendChild(newImgElement);
+                } else if ('move' == cla) {
+                    var newImgElement = new Element('img', {
+                        id: 'img_' + id.replace('a_', ''),
+                        width: eleInfo.width,
+                        height: eleInfo.height,
+                        src: eleInfo.img
+                    });
+                    newElement.appendChild(newImgElement);
+                } else if ('sg' == cla) {
+                    //var newImgElement = new Element('img', { id: 'img_' + id.replace('a_', ''), width: eleInfo.width, height: eleInfo.height, src: eleInfo.img});
+                    newElement.setStyle({'background-image': 'url(' + resourcePath + eleInfo.img + ')'});
+                    //newElement.appendChild(newImgElement);
+                }
+                document.body.appendChild(newElement);
+            },
+            oninFun: function (id) {	//获取焦点
+                $js('divFocus').setStyle({
+                    width: $js(id).getStyle('width'),
+                    height: $js(id).getStyle('height'),
+                    top: $js(id).getStyle('top'),
+                    left: $js(id).getStyle('left')
+                });
+                var tempImg = this.buttons[id].focusImage;
+                if (tempImg.indexOf('_') > 0) tempImg = tempImg.split('_')[0] + '.png';
+                $js('img_Focus').src = resourcePath + '_' + tempImg;
+            },
+
+            onoutFun: function (id) {		//失去焦点
+                console.log('onoutFun');
+            },
+
+            EleInfo: function (width, height, top, left, img) {	//宽度,高度,y距离,x距离
+                var info = {};
+                info.width = width;
+                info.height = height;
+                info.top = top;
+                info.left = left;
+                info.img = img;
+                return info;
+            },
+
+            initMove: function () {
+                if (this.focusParam && this.focusParam != '') {
+                    var kyeEles = this.focusParam.split(':');
+                    for (var i = 0; i < kyeEles.length; i++) {
+                        var temp = kyeEles[i].split('=');
+                        var temp_ = temp[1].split(',');
+                        this.buttons['a_' + temp[0]] = this.KeyMove('a_' + temp[0], '', 'a_' + temp_[0], 'a_' + temp_[1], 'a_' + temp_[2], 'a_' + temp_[3], 's1.png');
+                    }
+                }
+            },
+
+            KeyMove: function (id, action, up, down, left, right, focusImage) { 	//焦点对象
+                var info = {};
+                info.id = id;
+                info.action = action;
+                info.up = up;
+                info.down = down;
+                info.left = left;
+                info.right = right;
+                info.focusImage = focusImage;
+                return info;
+            },
+            changeActive: function (key) {	//改变 焦点对象
+                if ('a_0' == key) return;
+                if ($(currActive)) {
+                    $($(currActive).id.replace('a_', 'img_')).src = resourcePath + 'tm.png';
+                }
+                $(key.replace('a_', 'img_')).src = resourcePath + 'game/rabbit.png';
+                currActive = key;
+                this.cheNum = currActive.split('_')[currActive.split('_').length - 1];
+                //console.log(this.cheNum);
+            },
+
+            start: function(){
+                var _self = this;
+                _self.randomSg();
+                this.sgDivInter2 = setInterval(function(){
+                _self.moveSg();
+               }, 50);
+            },
+
+            randomSg: function () {
+                var _self = this;
+                this.sgDivInter1 = setInterval(function () {
+                    var n = Math.floor(Math.random() * _self.sgs.length);
+                    //var m = Math.ceil(Math.random() * _self.imgNum);
+                    _self.sgs[n].img = 'cake.png';
+                    _self.addPageElement('sg_' + _self.useNum, _self.sgs[n], 'sg');
+                    _self.moveIds[_self.moveIds.length] = 'sg_' + _self.useNum;
+                    _self.useNum += 1;
+                    if(_self.useNum>=30){
+                        if(myPage.sgDivInter1) clearInterval(myPage.sgDivInter1);
+                        //if(myPage.sgDivInter2) clearInterval(myPage.sgDivInter2);
+                        //调用接口对用户增加月饼数量
+                        setTimeout(function(){
+                            if(myPage.sgDivInter2) clearInterval(myPage.sgDivInter2);
+                            gameCore.onMoonSuccess(_self.score,end);
+                        },4000);
+                    }
+                }, 1000);
+            },
+
+            moveSg: function () {
+                for (var i = 0; i < this.moveIds.length; i++) {
+                    var ele = $js(this.moveIds[i]);
+                    var tempTop = Element.cumulativeOffset(ele).top;
+                    var templeft = Element.cumulativeOffset(ele).left;
+                    var tempImg = ele.style.backgroundImage;
+                    var cakeNum = 0;
+                    ele.style.top = (tempTop + 10) + "px";
+
+                    if (tempTop >= 450) {
+                        this.moveIds.splice(i, 1);
+                        document.body.removeChild(ele);
+                        if (tempImg.indexOf('cake.png') > 0) {
+                            cakeNum = 1;
+                        }
+                        for (var j = 0; j < 3; j++) {
+                            if (templeft == this.sgs[j].left && this.cheNum == (j + 1)) {
+                                this.score += cakeNum;
+                            }
+                        }
+                        document.getElementById('divScore').innerHTML = this.score;
+                    }
+
+                }
+                ;
+            },
+
+            comparison: function (num) {	//比较是否成功
+                return true;
+            }
+        });
+
+        var currActive; 				//当前元素
+        var defaultActive = ''; 		//默认焦点
+        var focusParam = '2#JD:1=0,0,0,2:2=0,0,1,3:3=0,0,2,0:4=0,0,0,0:5=0,0,0,0:6=0,0,0,0:7=0,0,0,0:8=0,0,0,0:9=0,13,10,0:10=0,0,11,9:11=0,12,0,10:12=11,0,0,13:13=9,0,12,0:14=0,0,0,0';
+        //focusParam = '${data.dFocus}';
+        var myPage;  //全局对象
+
+        Event.observe(window, 'load', function () {  //绑定页面加载
+
+            if (focusParam.indexOf('#') > 0) {//默认焦点id
+                defaultActive = 'a_' + focusParam.slice(0, focusParam.indexOf('#'));
+            } else {
+                defaultActive = 'a_' + focusParam.slice(0, focusParam.indexOf('JD:'));
+            }
+
+            focusParam = focusParam.slice(focusParam.indexOf('JD:') + 3);
+
+            myPage = new LoadInit(defaultActive);//初始化页面
+
+            if($js(defaultActive)) myPage.changeActive(defaultActive);
+
+
+            /*this.timeInter = setInterval(function(){
+                var num = this.useNum;
+                 if(num>=30){
+                    clearInterval(timeInter);
+                    //调用接口添加总数到用户记录
+                     if(myPage.sgDivInter1) clearInterval(myPage.sgDivInter1);
+                     if(myPage.sgDivInter2) clearInterval(myPage.sgDivInter2);
+                      gameCore.onSuccess(end);
+                 };
+            }, 1000);*/
+        });
+
+        Epg.Button.init({defaultButtonId: "", buttons: buttons});
+    }
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>jsencrypt</title>
+  <script src="https://cdn.jsdelivr.net/npm/jsencrypt@3.2.1/bin/jsencrypt.js"></script>
+</head>
+<body>
+  <script>
+    var encoder = new JSEncrypt()
+    encoder.setPublicKey("MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC1Kvk5JS2T9eXx7NOCrgbUzt4cV+VHAk6CyxcB7bo/dt6qHAOWUvKUNVcttUNoaN+uzkkEN7D0xJSFHi5QUnSAQRzE5Xw5QnN+y9lJpmuYXOIplQnTWjdr9MjJuV5a/si2v/TMzpy5hTKRagMz3ZhfG0o/hIxqzGA7t3GnmoOXUQIDAQAB")
+    var time = window.performance.timeOrigin
+    // var a = encoder.encrypt('1,1');
+    var a = 'ZBulalvvuGxFLPrwp+/tsE85GdLIeSOihHFOEIN0v9SQCxSYqJPAyp1TXTc2QFRC3v7Lxunecn+xAfTAjRQPsd+ga0M7woYyaU7+ypZtJOA/8iIVYaptqBeC9JbaRrXJOHTFhlsh5AmYhu87nRpwpRUFuwcvD37wOwLXtc1ahdk='
+    console.log(a)
+    
+    
+    var decoder = new JSEncrypt()
+    decoder.setPrivateKey("MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBALUq+TklLZP15fHs04KuBtTO3hxX5UcCToLLFwHtuj923qocA5ZS8pQ1Vy21Q2ho367OSQQ3sPTElIUeLlBSdIBBHMTlfDlCc37L2Umma5hc4imVCdNaN2v0yMm5Xlr+yLa/9MzOnLmFMpFqAzPdmF8bSj+EjGrMYDu3caeag5dRAgMBAAECgYAUd6JoXlbj3Gf6CPNsVBTZffWB5jw05YHRLPiQczcTbG6DcV7GYOCe9de/hjbzWMXMjemZ3GDVhk/xKhO5Z1dZ5SE2ZJUySaTU5Z8WMuHspkEhdrZCegcDVT5dfhRb547/OnD+AJRFOBCHoz4XzceJ4nK/a+rtnom+tjlSt/wUMQJBAOyPgdz3JuQydyu7mN0x593q1le68/BBjgWM4nDH0phFVwDw3OJqd055qFH+EOiWgaxg3ey92oSYN4zLVgsLRPcCQQDEDi1lVfMDa0NJrUGFlzLo+8K3t2OfS0qh3RIkbT/upFUMCvmwGA6da+K9XxEezDb8PG/iaNt3hJ6Dt0wfEhv3AkAcaEdR/6P990l0SPzcYyfS8GZ49oxgp56kb/ypSnWxr3H5PPNphRt6owVhgz8IjzpXNvKvgUUCcz0IfUqB3QKVAkApJsCokI3dndoV0OP74myxMocAgOHMQcV8jCaOts/Ai4W+bV9Tcvk+WbLSBO5XBI5WC2mAoHnQcGnFQ+gabXapAkEAzIr7pEph586CQY0GZA02cq/RHSOKp7Ha4iK1k/tr8wXSvOqoCaAy6VP0cf0HWAYn9OLqgrvSkv1OTG9rugF+eg==")
+    console.log(decoder.decrypt(a))
+    console.log('用时：' + window.performance.timeOrigin - time)
+  </script>
+</body>
+</html>

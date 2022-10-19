@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lottery</title>
+</head>
+<body>
+<script src="./../vue/static/vue.min.js"></script>
+<div id="app"></div>
+<script>
+    var app = new Vue({
+        el: "#app",
+        data() {
+            return {
+                /** 双色球，
+                 * 33个球最少抽6个红球，16个球最少抽1个，组合起来，价格是2
+                 * 单式：33个红球只选6个，16个蓝球直选1个
+                 * 复式：红球多于6个少于33个，篮球多于1个少于16个
+                 * 投注倍数范围为2-99倍；
+                 * 单投注金额不超过20000元；
+                 * 每周二、四、日开奖
+                 * 浙江福彩参考：http://www.zjflcp.com/ch120/system/2018/08/12/031070186.shtml
+                 * */
+                dualColor: {
+                    title: "双色球",
+                    rule: {
+                        red: {count: 33, bet: 6},
+                        blue: {count: 16, bet: 1}
+                    },
+                    price: 2,
+                    selected: {red: 8, blue: 3}
+                },
+                /**大乐透，
+                 * 单式：35个红球只选5个，12个蓝球直选2个
+                 * 复式：35个球红球最少选5个，12个蓝球最少选2个，组合起来，价格是2，可以每注追加1元
+                 * 前胆选取：前区胆码m，拖码n，后区x，则C(5, 5-m)*C(x, 2)
+                 * 后胆选取：后区胆码m，拖码n，则C(n, 1)
+                 * 追加投注：每注追加1元人民币
+                 * 浙江体彩才考：https://zjlottery.com/Rule/Lotto/201902/10750.html
+                 * */
+                superLotto: {
+                    title: "大乐透",
+                    rule: {
+                        red: {count: 35, bet: 5},
+                        blue: {count: 12, bet: 2}
+                    },
+                    price: 2,
+                    ratioPrice: 3,                  // 追加1元投注
+                    selected: {
+                        front: {dan: 0, tuo: 11},    // 前区
+                        end: {dan: 1, tuo: 2},      // 后区
+                        add: false                  // 是否追加投注
+                    }
+                },
+                /**福彩3D
+                 * 每个数可以复选，按照组合排列进行计算注数；
+                 * 单选：3个数组每个都不同，1注；
+                 * 组选3：3个数字2个相同，排列，3注；
+                 * 组选6：3个数字都不相同，排列，6注；
+                 * 可以选择多组，1至5组数据；
+                 * 可以连续1至7期；
+                 * 可以多倍投注，投注倍数为2至99倍，单张彩票不超过20000元；
+                 * 浙江福彩3D参考：http://www.zjflcp.com/ch120/system/2018/08/10/031069199.shtml
+                 * */
+                welfare3d: {
+                    title: "福彩3D",
+                    price: 2,
+                    rule: {
+                        term: [{title: "1期", num: 1},
+                            {title: "2期", num: 2},
+                            {title: "3期", num: 3},
+                            {title: "4期", num: 4},
+                            {title: "5期", num: 5},
+                            {title: "6期", num: 6},
+                            {title: "7期", num: 7}],
+                        betType: [{title: "单选", ratio: 1},
+                            {title: "组选3", ratio: 3},
+                            {title: "组选6", ratio: 6}]
+                    },
+                    selected: { term: 2,  type: 2, multiple: 2, number: [1, 2, 3] } // 假设投3期，组选6，2倍投注，选择数为[1, 2, 3]
+                },
+                /** 排列3
+                 * 规则和福彩3D相同；
+                 * 单选：3个数组每个都不同，1注；
+                 * 组选3：3个数字2个相同，排列，3注；
+                 * 组选6：3个数字都不相同，排列，6注；
+                 * 不能多期投注；
+                 * 可以多倍投注，投注倍数为2至99倍，单张彩票不超过20000元；
+                 * 浙江体彩排列三：https://zjlottery.com/Rule/Lotto/201409/10770.html
+                 */
+                arrange3: {
+                    title: "排列3",
+                    price: 2,
+                    rule: {
+                        betType: [{title: "直选", ratio: 1},
+                            {title: "组选3", ratio: 3},
+                            {title: "组选6", ratio: 6}]
+                    },
+                    selected: { type: 2, multiple: 2 } // 假设选择组选6，2倍投注
+                },
+                /** 排列5
+                 * 单票投注上限10000注；
+                 * 可以多倍投注，投注倍数为2至99倍；
+                 * 浙江体彩排列五：https://zjlottery.com/Rule/Lotto/201005/10771.html
+                 */
+                arrange5: {
+                    title: "排列5",
+                    price: 2,
+                    rule: {
+                    },
+                    selected: {  }
+                },
+                /** 七乐彩
+                 * 单式：30选7；
+                 * 复式：30选8至16个，组合出7个作为一注；
+                 * 胆拖：30选1至6个作为胆码，再补充其他不同的，组合出7个作为一注；
+                 * 多倍投注：投注倍数为2至99倍；
+                 * 浙江福彩七乐彩：http://www.zjflcp.com/ch120/system/2018/08/12/031070167.shtml
+                 */
+                sevenHappy: {
+                    title: "七乐彩",
+                    price: 2,
+                    rule: {
+                        betType: [
+                            { title: "单式", bet: 7 },
+                            { title: "复式", bets: [8, 16] },             // 复式，从8至16个数中选取7个
+                            { title: "拖胆", bets: [1, 6] }               // 1至6个胆码，再补充任意个拖码
+                        ]
+                    },
+                    selected: { type: 2, bet: 10, dan: 3, tuo: 6, ratio: 1 } // 选择
+                },
+                /** 东方6+1
+                 * 单式：1个6位自然数的基本号码和1个生肖码排列组成；
+                 * 基本复式：6位中的一位或任几位选择2个以上；
+                 * 生肖复式：6位中都是1位，生肖码区选取2个或2个以上；
+                 * 双区复式：6位中的一位或任几位选择2个以上，生肖码区选取2个或2个以上；
+                 * 多倍投注：投注倍数为2至99倍，单张大投注数不超过10000注；
+                 * 浙江福彩6+1：http://www.zjflcp.com/ch120/system/2018/08/12/031070154.shtml
+                 */
+                sixPlusOne: {
+                    title: "东方6+1",
+                    price: 2,
+                    rule: {
+                        betType: [
+                            {title: "单式"},
+                            {title: "基本复式"},
+                            {title: "生肖复式"},
+                            {title: "双区复式"},
+                        ]
+                    },
+                    selected: {
+                        type: 0,
+                        front: 2,
+                        end: 1
+                    }
+                }
+            }
+        },
+        mounted() {
+            // this.calculate();
+            // 双色球
+            // this.calcDualColor()
+            // 大乐透
+            // this.calcSuperLotto()
+            // 福彩3D
+            // this.calcWelfare3D()
+            // 排列三
+            // this.calcArrange3()
+            // 七彩乐
+            // this.calcSevenHappy()
+            // 前区中3个号，后区中1个
+
+            /**
+             *  35选5,12选2
+             */
+            let fSelect = 6, // 用户前区选择6个
+                eSelect = 3, // 用户后区选择3个
+                fBet = 5,    // 前区必须选择5个
+                eBet = 2,    // 后区必须选择2个
+                fHit = 3,    // 前区命中3个，
+                eHit = 1,    // 后区命中1个
+                amount = 0;
+
+            // 八等奖 3 + 1
+            amount += this.combine(3, 2) * this.combine(2, 1) * 15
+            // 九等奖 3 + 0
+            amount += this.combine(3, 2) * 5
+            // 九等奖 2 + 1
+            amount += this.combine(3, 2) * this.combine(3, 3) * this.combine(2, 1) * 5
+            console.log(amount) // 135
+
+            amount = 0
+            // 九等奖 2 + 1
+            amount += this.combine(4, 3) * this.combine(2, 1) * 5
+            console.log(amount)
+
+
+            amount = 0
+            // 01,02,03,08, 17,28,30@05,06, 09 前区中4个，后区中2个
+            // 四等奖 4 + 2
+            amount += this.combine(3, 1) * 3000                                         // 3注
+            // 五等奖 4 + 1
+            amount += this.combine(3, 1) * this.combine(2, 1) * 300                     // 6注
+            // 六等奖 3 + 2
+            amount += this.combine(4, 3) * this.combine(3, 2) * 200                     // 12注
+            // 七等奖 4 + 0
+            // amount += this.combine(4, 4) * 100
+            // 八等奖 3 + 1
+            amount += this.combine(4, 3) * this.combine(3, 2) * this.combine(2, 1) * 15 // 24注
+            // 八等奖 2 + 2
+            amount += this.combine(4, 2) * this.combine(3, 3) * this.combine(2, 2) * 15 // 6注
+            // 九等奖 3 + 0
+            // amount += this.combine(4, 3) * this.combine(3, 2) * 5
+            // 九等奖 1 + 2
+            // amount += this.combine(4, 2) * this.combine(3, 3) * 5                       // 6注
+            // 九等奖 2 + 1
+            amount += this.combine(4, 2) * this.combine(3, 3) * this.combine(2, 1) * 5  // 12 注
+            // 九等奖 0 + 2
+            // amount += 5
+            console.log(amount)
+
+        },
+        methods: {
+            calculate: function () {
+                let bet = this.combine(6, 4);
+                console.log(bet);
+            },
+            // 双色球计算
+            calcDualColor: function () {
+                let { selected, rule, price } = this.dualColor
+                if(selected.red < rule.red.bet) {
+                    return alert(`红球号码数量不应少于${rule.red.bet}个`)
+                }
+                if (selected.red > rule.red.count) {
+                    return alert(`红球号码数量不应多于${rule.red.count}个`)
+                }
+                if (selected.blue < rule.blue.bet) {
+                    return alert(`蓝号码数量不应少于${rule.blue.bet}个`);
+                }
+                if (selected.blue > rule.blue.count) {
+                    return alert(`蓝号码数量不应多于${rule.blue.count}个`);
+                }
+                let bet = this.combine(selected.red, rule.red.bet) * this.combine(selected.blue, rule.blue.bet)
+                console.log({bet: bet, amount: bet * price})
+            },
+            // 大乐透计算
+            calcSuperLotto() {
+                let {selected, rule, price, ratioPrice} = this.superLotto
+                if (selected.front.dan > 5) {
+                    return alert("前区胆码最多选择5个")
+                }
+                if (selected.front.dan + selected.front.tuo > 35) {
+                    return alert("前区号码数量不超过35个")
+                }
+                if (selected.end.dan > 2) {
+                    return alert("后区胆码最多选择2个")
+                }
+                if (selected.end.dan + selected.end.tuo > 12) {
+                    return alert("后区号码数量不超过12个")
+                }
+                if (selected.front.tuo === 0 && selected.front.dan < rule.red.bet) {
+                    return alert(`前区号码数不应少于${rule.red.bet}个`)
+                }
+                if (selected.end.tuo === 0 && selected.end.dan < rule.blue.bet) {
+                    return alert(`前区号码数不应少于${rule.blue.bet}个`)
+                }
+                let bet = this.combine(selected.front.tuo, rule.red.bet - selected.front.dan)
+                    * this.combine(selected.end.tuo, rule.blue.bet - selected.end.dan)
+                console.log({bet: bet, amount: bet * (selected.add ? ratioPrice : price)})
+
+            },
+            // 计算福彩3D
+            calcWelfare3D: function() {
+                let { price, rule, selected } = this.welfare3d
+                let bet = rule.term[selected.term].num * rule.betType[selected.type].ratio * selected.multiple
+                // 计算复式
+                for (let i = 0; i < selected.number.length; i++) {
+                    bet *= this.combine(selected.number[i], 1)
+                }
+                console.log({ bet: bet, amount: bet * price })
+            },
+            // 计算排列三
+            calcArrange3: function() {
+                let { price, rule, selected } = this.arrange3
+                let bet = rule.betType[selected.type].ratio * selected.multiple
+                console.log({ bet: bet, amount: bet * price })
+            },
+            // 计算七彩乐
+            calcSevenHappy: function() {
+                let { price, rule, selected } = this.sevenHappy, result = { bet: 0, amount: 0 }
+                // 单式
+                if(selected.type === 0) {
+                    result.bet = 1
+                    result.amount = price * result.bet
+                }
+                // 复式
+                if(selected.type === 1) {
+                    if(selected.bet < rule.betType[1].bets[0] || selected.bet > rule.betType[1].bets[1]) {
+                        return alert(`复式请选择${rule.betType[1].bets[0]}至${rule.betType[1].bets[1]}个数字`)
+                    }
+                    result.bet = this.combine(selected.bet, rule.betType[0].bet) * selected.ratio
+                    result.amount = price * result.bet
+
+                }
+                // 胆拖
+                if (selected.type === 2) {
+                    if(selected.dan < rule.betType[2].bets[0] || selected.dan > rule.betType[2].bets[1]) {
+                        return alert(`胆码请选择${rule.betType[2].bets[0]}至${rule.betType[2].bets[1]}个数字`);
+                    }
+                    result.bet = this.combine(selected.tuo, selected.tuo - (rule.betType[0].bet - selected.dan))
+                    result.amount = price * result.bet
+                }
+
+                console.log(result)
+            },
+            // 组合公式,C(n, m) = A(n, m)/m!
+            combine: function (n, m) {
+                // 红球/蓝球选中个数小于规定个数
+                if (n < m || m < 0) {
+                    return 0;
+                }
+                return this.factorial(n, n - m + 1) / this.factorial(m, 1);
+            },
+            // 阶乘
+            factorial: function (max, min) {
+                // 选中个数大于等于规定个数并且选中个数大于1
+                if (max >= min && max > 1) {
+                    return max * this.factorial(max - 1, min);
+                } else {
+                    return 1;
+                }
+            }
+        }
+    })
+</script>
+</body>
+</html>

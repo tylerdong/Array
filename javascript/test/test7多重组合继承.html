@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JS面向对象之继承--多种组合继承</title>
+</head>
+<body>
+<script>
+    /**
+     * (1)类式继承
+     * 通过设置子类的原型是一个父类对象，可以继承父类中的属性方法，以及父类原型中的属性和方法。
+     * 这种方式不能向父类构造函数传递参数，会有父类中的引用类型属性公用问题。
+     */
+    // function SuperClass() {
+    //     this.superValue = 'superValue';
+    // }
+    //
+    // SuperClass.prototype.getSuperValue = function () {
+    //     return this.superValue;
+    // }
+    //
+    // function SubClass() {
+    //     this.subValue = 'subValue'
+    // }
+    //
+    // SubClass.prototype = new SuperClass();
+    //
+    // let sub = new SubClass();
+    // console.log(sub.subValue); // subValue
+    // console.log(sub.superValue); // superValue
+    // console.log(sub.getSuperValue()); // superValue
+
+    /**
+     * （2）构造函数继承
+     * 使用call方法调用父类构造函数，从而给子类的this对象赋值，获取父类的属性方法。
+     * 这种方式可以向父类构造函数传递参数，子类从父类中继承的引用属性互不影响，但是不能获取到父类原型对象的属性和方法。
+     */
+    // function SuperClass(id) {
+    //     this.books = ['javascript', 'html', 'css'];
+    //     this.id = id;
+    // }
+    // SuperClass.prototype.showBooks = function () {
+    //     console.log(this.books);
+    // }
+    //
+    // function SubClass(id) {
+    //     SuperClass.call(this, id);
+    // }
+    //
+    // var instance = new SubClass(10);
+    // console.log(instance.id); // 10
+    // // instance.showBooks(); // undefined
+    // console.log(instance.books); // ["javascript", "html", "css"]
+    // instance.books.push("java");
+    // console.log(instance.books); // ["javascript", "html", "css", "java"]
+    // var anotherInstance = new SubClass(11);
+    // console.log(anotherInstance.books); // ["javascript", "html", "css"]
+
+    /**
+     * （3）组合继承
+     * 组合继承是将类式继承和构造函数继承结合起来使用。
+     * 这样使用call方法调用一次父类方法，引用属性互不影响。这种方式有两次调用父类构造函数的问题，
+     * 继承父类原型中的属性和方法的时候又调用了一次父类构造函数。
+     */
+    // function SuperClass(name) {
+    //     this.name = name;
+    //     this.books = ['javascript', 'html', 'css'];
+    // }
+    // SuperClass.prototype.getName = function () {
+    //     console.log(this.name);
+    // }
+    //
+    // function SubClass(name) {
+    //     SuperClass.call(this, name);
+    // }
+    // SubClass.prototype = new SuperClass();
+    //
+    // var instance = new SubClass("instance");
+    // console.log(instance.name); //instance
+    // instance.getName(); //instance
+    // console.log(instance.books); //["javascript", "html", "css"]
+    // instance.books.push("java");
+    // console.log(instance.books); //["javascript", "html", "css", "java"]
+    //
+    // var anotherInstance = new SubClass("anotherInstance");
+    // console.log(anotherInstance.books); //["javascript", "html", "css", "java"]，使用call方法继承，引用属性互不影响
+    // console.log(anotherInstance.name); //anotherInstance
+
+    /**
+     * （4）原型式继承
+     * 使用函数的prototype属性，根据已有对象创建一个新的对象。
+     * 这种方式也是通过原型的方式继承属性和方法，所以继承来的引用属性依然会相互影响。
+     */
+    // function inheritObject(o) {
+    //     function F() {
+    //     }
+    //     F.prototype = o;
+    //     return new F();
+    // }
+    // var book = {
+    //     name: "book",
+    //     books: ["css", "javascript"]
+    // }
+    // var newBook = inheritObject(book);
+    // console.log(newBook.name); //book
+    // console.log(newBook.books); //["css", "javascript"]
+    // newBook.books.push("java");
+    // console.log(newBook.books); //["css", "javascript", "java"]
+    //
+    // var anotherBook = inheritObject(book);
+    // console.log(anotherBook.name); //book
+    // console.log(anotherBook.books); //["css", "javascript", "java"]
+
+    /**
+     * （5）寄生式继承
+     * 在原型式继承基础上给子类添加额外的属性和方法。
+     * 这种方式也是通过原型的方式继承属性和方法，所以继承来的引用属性依然会相互影响。
+     */
+    // function InheritObject(o) {
+    //     function F() {
+    //     }
+    //
+    //     F.prototype = o;
+    //     return new F();
+    // }
+    // // 扩展
+    // function createBook(obj) {
+    //     var o = InheritObject(obj);
+    //     o.getName = function () {
+    //         console.log(obj.name);
+    //     }
+    //     return o;
+    // }
+    //
+    // var book = {
+    //     name: "book",
+    //     books: ['css', "html"]
+    // }
+    // var newBook = createBook(book);
+    // console.log(newBook.name); //book
+    // console.log(newBook.books); //["css", "html"]
+    // newBook.getName(); //book
+    // newBook.books.push("java");
+    // console.log(newBook.books); //["css", "html", "java"]
+    // newBook.getName();//book
+    //
+    // var anotherBook = createBook(book);
+    // console.log(anotherBook.books); //["css", "html", "java"]
+    // console.log(book.books); //["css", "html", "java"]
+    // anotherBook.getName(); //book
+
+    /**
+     * （6）寄生组合继承
+     * 不调用父类构造方法，只从父类原型中复制一份属性和方法的集合。
+     * 父类内部的属性方法通过call获取。
+     * 此外修改父类原型的constructor指针，让它指向子类构造函数，这样子类原型更加合理。
+     */
+    // function inheritObject(o) {
+    //     function F() {}
+    //     F.prototype = o;
+    //     return new F();
+    // }
+    // function inheritPrototype(son, father) {
+    //     var p = inheritObject(father.prototype);
+    //     p.constructor = son;
+    //     son.prototype = p;
+    // }
+    //
+    // function SuperClass(name) {
+    //     this.name = name;
+    //     this.colors = ['red', 'blue'];
+    // }
+    // function SubClass(name) {
+    //     SuperClass.call(this, name);
+    // }
+    //
+    // inheritPrototype(SubClass, SuperClass);
+    //
+    // var instance = new SubClass("instance");
+    // console.log(instance.name); //instance
+    // console.log(instance.colors); //["red", "blue"]
+    // instance.colors.push("green");
+    // console.log(instance.colors); //["red", "blue", "green"]
+    //
+    // var anotherInstance = new SubClass("anotherInstance");
+    // console.log(anotherInstance.name); // anotherInstance
+    // console.log(anotherInstance.colors); //["red", "blue", "green"]
+
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, minimum-scale=1, user-scalable=no">
+  <title>anime.js老虎机上下滚动抽奖</title>
+  <link rel="Stylesheet" type="text/css" href="./../css/reset.css"></link>
+  <script src="./anime.min.js"></script>
+  <script src="./../vue/static/vue.min.js"></script>
+  <script src="./flexible.js"></script>
+  <script src="./../math.js"></script>
+  <style>
+    body {
+      width: 100vw;
+      height: 100vh;
+      background-color: rgb(235, 48, 0);
+    }
+    .slot-machine-wrap{
+      position: relative;
+      width: 100vw;
+      height: 646px;
+      background: center / 100% 100% no-repeat url("img/slot-machine/draw-wrap.png");
+    }
+    .slot-machine {
+      position: absolute;
+      top: 5.2rem;
+      left: 1.8rem;
+      margin: 0 auto;
+    }
+    .slot {
+      float: left;
+    }
+    .slot:nth-child(2) {
+      margin: 0px;
+    }
+    .slot__window {
+      width: 2.13rem;
+      height: 2rem;
+      overflow: hidden;
+    }
+    .slot__item {
+      width: 100%;
+    }
+    .slot__item__content{
+    }
+
+    .slot__item__content img {
+      width: 100%;
+    }
+    .start{
+      position: absolute;
+      left: 1.36rem;
+      top: 9.5rem;
+      width: 4.8rem;
+    }
+  </style>
+</head>
+<body>
+  <div id="app" class="slot-machine-wrap">
+    <!-- 老虎机 -->
+    <div class="slot-machine">
+      <div v-for="(slot, i) in slots" ref="slots" :key="i" class="slot">
+        <div class="slot__window">
+          <div class="slot__wrap" :style="{transform: 'translateY(-'+ compHeight +'px)'}">
+
+            <div v-for="(opt, idx) in slot.items" :key="idx" class="slot__item">
+              <div class="slot__item__content">
+                <img :src="opt.imgSrc" alt="" srcset="">
+              </div>
+            </div>
+
+            <div class="slot__item slot__item--copy">
+              <div class="slot__item__content">
+                <img :src="slot.items[0].imgSrc" alt="">
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <img src="img/slot-machine/start.png" class="start" alt="" srcset="" @click="start">
+  </div>
+</body>
+<script>
+  let app = new Vue({
+      el: '#app',
+      data() {
+        return {
+          slots: Array(3).fill({}).map(i => (
+            {
+              title: '',
+              items: shuffle(Array(3).fill({}).map((item, j) => ({
+                imgSrc: 'img/slot-machine/' + (j + 1).toString() + '.png',
+                index: j
+              })))
+            }
+          )),
+          compHeight: 0,
+          choice: 1,
+          counter: 0
+        }
+      },
+      mounted () {
+        this.compHeight = document.getElementsByClassName('slot__item')[0].offsetHeight * 6
+      },
+      methods: {
+        start() {
+          let itemHeight = document.getElementsByClassName('slot__item')[0].offsetHeight
+          let height = itemHeight * 3
+          let that = this
+          let i = 0
+          let choise = 0
+          let an = anime({
+            easing: 'linear',
+            targets: '.slot__wrap',
+            translateY: '+=' + height,
+            duration: 1000,
+            loop: 5,
+            loopComplete: a => {
+              i++
+              if (i === 5) {
+                //获取接口抽奖结果
+                a.seek(0)
+                let ca = this.slots.map(s => {
+                  return s.items.findIndex((item, j) => choise === item.index)
+                })
+                console.log(ca)
+                toLocation(ca)
+              }
+            }
+          })
+
+          let toLocation = t => anime({
+            easing: 'linear',
+            targets: '.slot__wrap',
+            translateY: (target, index, targetsLength) => {
+              console.log(t[index])
+              return -1 * itemHeight * (t[index])
+            },
+            duration: (target, index, targetsLength) => {
+              return 1000 * (t[index])
+            }
+          })
+        }
+      },
+
+  })
+</script>
+
+</html>

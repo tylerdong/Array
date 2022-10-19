@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>svg</title>
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+</head>
+<body>
+<!-- 可缩放矢量图形svg
+svg是一种在网页上呈现图像的方法，svg不是直接图像，二室使用文本穿件图像的一种方式，它是根据浏览器的大小进行缩放，因此调整浏览器大小不会使图像失真。除IE8之外，所有浏览器均支持svg。
+svg默认的单位是像素，因此不需要指定单位是否为像素，如果要绘制一个矩形，可以使用下面的代码来绘制它。
+-->
+<svg width="500" height="500">
+  <rect  x="0" y="0" width="300" height="300"></rect>
+</svg>
+<!-- 就像格式化html元素一样，格式化svg元素很简单，将矩形的背景颜色设置成黄色，只需要添加一个属性fill，并将值指定为黄色，如下： -->
+<svg width="500" height="500">
+  <rect  x="0" y="0" width="300" height="300" fill="yellow"></rect>
+</svg>
+
+<!-- 选择
+选择是D3的核心概念之一，她给予css选择器，允许在网页中选择一个或多个元素，此外允许修改，追加，删除与预定义数据集相关的元素。
+D3.js使用下面两种方式从html中选择元素。
+select()：通过匹配给定的css选择器，仅选择一个DOM元素，如果给定的css选择器有多个元素，则只选择第一个。
+selectAll()：通过匹配给定的css选择器来选择所有的DOM元素，如果你属性jquery的选择器，d3的选择器几乎完全相同。
+select()方法根据css选择器选择html元素，在css选择器中，可以通过下面三种方式定义和访问html元素：
+html元素的标记，例如div，h1，p，span等
+html元素的类名称
+html元素的ID
+-->
+<!-- <div class="myClass">hello world!</div> -->
+
+<!-- 数据加入
+数据连接是d3.js的另一个重要概念，它雨选择一起使用，能够根据数据集操作html文档。默认情况下d3.js在其方法中未数据集提供最高优先级，并且数据集中每个项对应html元素。
+
+数据连接
+数据连接可以注入修改删除html元素，以及基于现有html文档的图形元素之间创建一种紧密的关系，数据连接是的基于数据集的操作变得简单，容易。
+数据连接主要目的是使用给定的数据集映射现有文档的元素，它根据给定的数据集创建文档的虚拟表示，并且提供虚拟表示的方法。例如数据集[10,20,30,25,15]，这个数据集有5个元素，使用选择器的
+selectAll方法和数据集连接的data方法将它映射到以下文档的li元素。
+-->
+<input type="button" name="remove" value="remove fourth value" onclick="javascript:remove()"/>
+<ul id="list">
+  <li></li>
+  <li></li>
+</ul>
+<script>
+  // alert(d3.select('div').text())
+  // alert(d3.select('.myClass').text())
+  // d3.select("#list").selectAll('li').data([10,20,30,25,15]).text(function(d) { return d; })
+  // text()方法中的函数用于获取li元素映射数据，这里d表示第一个li元素未10，第二个li元素为20.
+  //下面三个元素可以映射到任何元素，可以使用数据连接的enter()和selector的append()方法完成。
+  //enter()方法完成对剩余数据的方位（未映射到现有元素）。append方法用于从相应的数据创建
+  //新元素，我们为剩余的数据创建li元素，如下：
+  // d3.select("#list").selectAll("li")
+  //  .data([10, 20, 30, 25, 15])
+  //  .text(function(d) { return "This is pre-existing element and the value is " + d; })
+  //  .enter()
+  //  .append("li")
+  //  .text(function(d) 
+  //     { return "This is dynamically created element and the value is " + d; });
+  
+  
+  //数据连接提供另一种方法，称为exit()方法，用于处理从数据集中动态删除的数据项。完成代码如下：
+
+  // function remove() {
+  //   d3.selectAll('li')
+  //     .data([10, 20, 30, 15])
+  //     .exit()
+  //     .remove()
+  // }
+
+  var obj = {
+    a: 1,
+    b: 2,
+    c: 3
+  }
+  console.log(d3.keys(obj))
+
+
+
+</script>
+</body>
+</html>

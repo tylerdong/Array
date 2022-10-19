@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<hello-world>Comandeer</hello-world>
+
+<script src="loader.js"></script>
+<script>
+    loadComponent('HelloWorld.wc').then((component) => {
+        console.log(component);
+    });
+</script>
+</body>
+</html>
