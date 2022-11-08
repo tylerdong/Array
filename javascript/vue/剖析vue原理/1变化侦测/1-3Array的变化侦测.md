@@ -146,6 +146,129 @@ export class Observer {
 ## 4.2 如何收集依赖
 在第二章中我们说了，数组的依赖也在getter中收集，那么在getter中到底如何收集呢？这里有一个需要注意的点，那就是依赖管理定义在observer类中，而我们需要在getter中收集依赖，也就是说我们必须在getter中能够访问到Observer类中的依赖管理，才能把依赖存进去。源码如下：
 ```javascript
+/**
+ * Intercept mutation methods and emit events
+*/
+methodsToPatch.forEach(function(method) {
+  const original = arrayProto[method]
+  def(arrayMethods, method, function mutator(...args) {
+    const result = original.apply(this, args)
+    const ob = this.__ob__
+    //notify change
+    ob.dep.notify()
+    return result
+  })
+})
 ```
+上面代码中，由于我们的拦截器是挂载到数据原型上的，所以拦截器中的this就是数据value，拿到value上的Observer类实例，从而就可以调用Observe类实例上的依赖管理器的dep.notify()方法，以达到通知以来的目的。  
+
+OK，以上就基本完成了Array数据变化的侦听。
+
+# 5.深度侦听
+在前文所讲的`Array`类型数据的变化侦听都仅仅说的是数据自身变化的侦听，比如给数组新增一个元素或者删除数组中的一个元素，而在Vue中，不论是Obect类型数据还是Array类型数据所实现的数据变化侦听都是深度侦听，所谓深度侦听就是不但要侦听数据自身的变化，还要侦听数据中所有子数据的变化。举个例子：
+
+```javascript
+let arr = [
+  {
+    name: 'NLRX',
+    age: '18'
+  }
+]
+```
+数组中包含了一个对象，如果该对象的某个属性发生了变化也应该被侦听到，这就是深度侦听。  
+
+这个实现起来比较简单，源码如下：
+```javascript
+export class Observer {
+  value: any;
+  dep: Dep;
+
+  constructor(value: any) {
+    this.value = value
+    this.dep = new Dep()
+    def(value, '__obj__', this)
+    if (Array.isArray(value)) {
+      const augment = hasProto ? protoAugment : copyAugment
+      augment(value, arrayMethods, arrayKeys)
+      this.observerArray(value) //上数组中所有元素转化为可侦听的
+    } else {
+      this.walk(value)
+    }
+  }
+
+  /**
+   * Observe a list of Array items
+  */
+ observeArray(items: Array<any>) {
+  for (let i = 0, l = items.length; i < l; i++) {
+    observe(item[i])
+  }
+ }
+}
+
+export function observe(value, asRootData) {
+  if (!isObject(value) || value instanceof VNode) {
+    return
+  }
+  let ob
+  if (hasOwn(value, '__ob__') && value.__ob__ instanceof Observer) {
+    ob = value.__ob__
+  } else {
+    ob = new Observer(value)
+  }
+  return ob
+}
+```
+
+在上面代码中个，对于Array型数据，调用了observeArray()方法，该方法内部会遍历数组中每一个元素，然后通过调用observe函数将每一个元素都转化成可侦听的响应式数据。  
+
+而对应object数据，在上一篇文章中我们已经在defineReactive函数中进行了地柜操作。
+
+# 6.数组新增元素的侦测
+```javascript
+/**
+ * Intercept mutation methods and emit events
+*/
+methodsToPatch.forEach(function (method) {
+  //cache original method
+  const original = arrayProto[method]
+  def(arrayMethods, method, function(...args)) {
+    const result = original.apply(this, args)
+    const ob = this.__ob__
+    let inserted
+    switch(method) {
+      case 'push':
+      case 'unshift':
+        inserted = args //如果是push或者unshift方法，那么传入的参数就是新增的元素
+        break
+      case 'splice':
+        inserted = args.splice(2) //如果是splice方法，那么传入参数列表中下标为2的就是新增的元素
+        break
+    }
+    if (inserted) ob.observeArray(inserted) //调用observe函数将新增的元素转化为响应式
+    //notify change
+    ob.dep.notify()
+    return result
+  })
+})
+```
+
+在上面拦截器定义代码中，如果是push或者unshift方法，那么传入参数就是新增的元素，如果是splice方法，那么传入的参数列表中下标为2的就是新增的元素，拿到新增的元素后，就可以调用observe函数将新增的元素转化成响应式的了。
+
+# 7.不足之处
+对于数组变化侦听是通过拦截器实现的，也就是说只要通过数组原型上的方法对数组进行操作就可以侦听到，但是日常开发中尝尝用过数组下标来操作数据，如下：
+
+```javascript
+let arr = [1, 2, 3]
+arr[0] = 5 //通过数组下标修改数组中的数据
+arr.length = 5 //通过修改数组长度清空数组
+```
+
+而使用上述例子中的操作方式来修改数组是无法侦听到的。同样，vue也注意到这个问题，为此vue增加了两个全局API：Vue.set和Vue.delete，这两个API的实现原理会在后面的学习中说到。
+
+# 8.总结
+在本篇文章中，首先我们分析了对于Array类型数据也在getter中进行依赖收集；其次我们发现，当数组数据被访问时，我们轻而易举可以知道，但是数据被修改的时候却很难知道，为了解决这个问题，创建了数组方法拦截器，从而可以将数组数据变的可观测。接着对数组依赖收集及数据变化如何通知依赖进行了深入分析；最后我们发现Vue不但对数组自身进行了变化侦听，还对数组每个元素以及新增元素都进行了变化侦听。  
+
+以上就是对Array类型数据的变化侦听分析。
 
 
