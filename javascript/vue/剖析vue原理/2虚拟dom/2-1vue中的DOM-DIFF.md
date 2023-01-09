@@ -124,7 +124,12 @@ function patchVnode(oldVnode, vnode, insertedVnodeQueue, removeOnly) {
     //若不相同，则用vnode的text替换真实dom的文本
     node.Ops.setTextContext(elm, vnode.text)
   }
-  
-
 }
 ```
+下面用流程图说明整个过程，如下：
+![./dom-diff.png](dom-diff.png)
+
+如果新旧vnode里都包含了子节点，那么对于子节点的更新在代码中调用了updateChildren方法，而这个方法的逻辑我们在下一篇文章中展开学习。
+
+#6. 总结
+本篇文章我们介绍了Vue中的DOM-Diff算法：patch过程。我们首选介绍了算法的整个流程，然后通过梳理算法思想，了解了整个patch过程中干了三件事，分别是创建节点，删除节点，更新节点。
