@@ -127,7 +127,7 @@ function patchVnode(oldVnode, vnode, insertedVnodeQueue, removeOnly) {
 }
 ```
 下面用流程图说明整个过程，如下：
-![./dom-diff.png](dom-diff.png)
+<img alt='' src="./img/dom-diff.png"/>
 
 如果新旧vnode里都包含了子节点，那么对于子节点的更新在代码中调用了updateChildren方法，而这个方法的逻辑我们在下一篇文章中展开学习。
 
