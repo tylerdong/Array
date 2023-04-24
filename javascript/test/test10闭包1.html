@@ -119,6 +119,31 @@
   /**Javascript闭包的用途
    * */
 
+   let id = setTimeout(() => {
+    console.log('aaaaaaa')
+   }, 1000)
+   clearTimeout(id)
+
+   let iIndex = 3, jValue = 6
+   let strHistory = '1:2-2:3-3:4-4:5'
+   let collect = strHistory.split('-')
+   console.log(collect)
+   if (collect.length > 0) {
+    for (let i = 0; i < collect.length; i++) {
+      console.log(i)
+      let history = collect[i].split(':')
+      if (iIndex == history[0]) {
+        return console.log(history[1])
+        history[1] = jValue.toString()
+        collect[i] = history.join(':')
+        strHistory = collect.join('-')
+        console.log(strHistory)
+        break
+      }
+    }
+   }
+
+
 
 </script>
 </body>

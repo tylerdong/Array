@@ -154,12 +154,32 @@
     // console.log('单引号', data)
     // console.log('双引号', obj)
     
-    //字符串连接操作测试
-    let isJoin = true
-    let stra = '123'
-    let strb = '56'
-    stra += (isJoin ? '4' : '') + strb
-    console.log(stra)
+    //字符串连接操作测试，取出userId，login
+    // let isJoin = true
+    // let stra = '123'
+    // let strb = '56'
+    // stra += (isJoin ? '4' : '') + strb
+    // console.log(stra)
+    // let str = "{\"userId\":60060171,\"nick\":null,\"token\":\"c10a044711cc70ec4db4cbcf162f5d83\",\"extTime\":1710668078590,\"login\":false,\"openId\":null,\"userKey\":\"jZucDYtLYjYjPWsdsQsdNsdtP1E6E3/OtJY0fH9cI+Xit9IfN4e3ybVSKqV2NjpQ1EiNgMsB2d2v\\r\\nywtzM+hJnyGZ8CoM2UKzRqGaYRI55eA=\\r\\n\"}"
+
+    // let i1 = str.indexOf('userId')
+    // let i2 = str.indexOf(':', i1)
+    // let i3 = str.indexOf(',', i2)
+    // let userId = str.substring(i2 + 1, i3)
+    // i1 = str.indexOf('login')
+    // i2 = str.indexOf(':', i1)
+    // i3 = str.indexOf(',', i2)
+    // let login = str.substring(i2 + 1, i3)
+    // console.log(userId, login)
+
+    //把对象拼接成访问字符串
+    let obj = {loginCode: 1, pageSource: 'invite'}
+    let searchStr = ''
+    let pageUrl = 'http://www.baidu.com'
+    Object.entries(obj).forEach((e, i, arr) => {
+      searchStr += `${e[0]}=${e[1]}` + (i == arr.length -1 ? '' : '&')
+    })
+    console.log(`${pageUrl}?${searchStr}`)
 </script>
 </body>
 </html>
